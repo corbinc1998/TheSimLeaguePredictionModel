@@ -66,7 +66,7 @@ madden-predict/
 
 ## Season History
 
-| Season | Years | Champion | Runner-Up | SB Score | MVP | Stats |
+| Season | Years | Champion | Runner-Up | SB Score | Season MVP | Season Stats |
 |--------|-------|----------|-----------|----------|-----|-------|
 | 1 | 09-10 | St. Louis Rams | Denver Broncos | 16–9 | Kurt Warner (Eagles) | 5,973 Yds · 47 TD · 32 INT · 94.4 RTG |
 | 2 | 10-11 | New York Giants | Buffalo Bills | 25–24 | Eli Manning (Giants) ⭐ | 5,141 Yds · 37 TD · 21 INT · 107.0 RTG |
