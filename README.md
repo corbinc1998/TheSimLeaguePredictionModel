@@ -59,12 +59,12 @@ madden-predict/
 
 | Season | Champion | Runner-Up | SB Score |
 |--------|----------|-----------|----------|
-| 1      | —        | —         | —        |
-| 2      | —        | —         | —        |
-| 3      | —        | —         | —        |
-| 4      | —        | —         | —        |
-| 5      | —        | —         | —        |
-| 6      | —        | —         | —        |
+| 1      | St. Louis Rams        | Denver Broncos         | 16-9       |
+| 2      | New York Giants       | Buffalo Bills         | 25-24       |
+| 3      | Denver Broncos        | Tampa Bay Buccaneers         | 51-10        |
+| 4      | Cleveland Browns       | Arizona Cardinals         | 40-13        |
+| 5      | Green Bay Packers       | San Diego Chargers         | 40-13        |
+| 6      | Baltimore Ravens        | Tampa Bay Buccaneers         | 17-16        |
 | 7      | Chicago Bears | Baltimore Ravens | 38–35 |
 
 ---
