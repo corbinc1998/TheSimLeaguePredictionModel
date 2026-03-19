@@ -68,13 +68,13 @@ madden-predict/
 
 | Season | Years | Champion | Runner-Up | SB Score | Season MVP | Season Stats |
 |--------|-------|----------|-----------|----------|-----|-------|
-| 1 | 09-10 | St. Louis Rams | Denver Broncos | 16–9 | Kurt Warner (Eagles) | 5,973 Yds · 47 TD · 32 INT · 94.4 RTG |
-| 2 | 10-11 | New York Giants | Buffalo Bills | 25–24 | Eli Manning (Giants) ⭐ | 5,141 Yds · 37 TD · 21 INT · 107.0 RTG |
-| 3 | 11-12 | Denver Broncos | Tampa Bay Buccaneers | 51–10 | Matt Ryan (Ravens) | 4,907 Yds · 35 TD · 14 INT · 106.1 RTG |
-| 4 | 12-13 | Cleveland Browns | Arizona Cardinals | 40–13 | Marc Bulger (Chiefs) | 5,215 Yds · 36 TD · 21 INT · 102.3 RTG |
-| 5 | 13-14 | Green Bay Packers | San Diego Chargers | 40–13 | Mark Sanchez (Packers) ⭐ | 4,743 Yds · 37 TD · 19 INT · 97.5 RTG |
+| 1 | 09-10 | St. Louis Rams | Denver Broncos | 16–9 | Kurt Warner (Eagles) | 5,973 Yds · 47 TD · 32 INT · 94.4 QBR |
+| 2 | 10-11 | New York Giants | Buffalo Bills | 25–24 | Eli Manning (Giants) ⭐ | 5,141 Yds · 37 TD · 21 INT · 107.0 QBR |
+| 3 | 11-12 | Denver Broncos | Tampa Bay Buccaneers | 51–10 | Matt Ryan (Ravens) | 4,907 Yds · 35 TD · 14 INT · 106.1 QBR |
+| 4 | 12-13 | Cleveland Browns | Arizona Cardinals | 40–13 | Marc Bulger (Chiefs) | 5,215 Yds · 36 TD · 21 INT · 102.3 QBR |
+| 5 | 13-14 | Green Bay Packers | San Diego Chargers | 40–13 | Mark Sanchez (Packers) ⭐ | 4,743 Yds · 37 TD · 19 INT · 97.5 QBR |
 | 6 | 14-15 | Baltimore Ravens | Tampa Bay Buccaneers | 17–16 | Adrian Peterson (Cowboys) | 2,001 Rush Yds · 18 TD · 50 Rec · 619 Rec Yds · 4 TD |
-| 7 | 15-16 | Chicago Bears | Baltimore Ravens | 38–35 | Mark Sanchez (Saints) | 5,566 Yds · 41 TD · 17 INT · 110.9 RTG |
+| 7 | 15-16 | Chicago Bears | Baltimore Ravens | 38–35 | Mark Sanchez (Saints) | 5,566 Yds · 41 TD · 17 INT · 110.9 QBR |
 | 8 | 16-17 | — | — | — | — | — |
 
 *⭐ = MVP won Super Bowl that season*
