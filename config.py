@@ -1,6 +1,15 @@
-# =============================================================================
-# config.py
-# =============================================================================
+# Season constants
+
+# Current season number
+current_season = 8
+# Regular season week count (17)
+regular_season_length = 17
+# First season (1) — useful for loops and validation
+first_season = 1
+
+
+
+
 
 TEAMS = {
     # AFC North
