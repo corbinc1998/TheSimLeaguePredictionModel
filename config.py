@@ -43,6 +43,7 @@ TEAMS = {
     "stl": {"name": "Rams",      "conference": "NFC", "division": "West"},
 }
 
+
 TEAM_IDS = list(TEAMS.keys())
 
 CONFERENCES = ["AFC", "NFC"]
@@ -58,6 +59,41 @@ ABBR = {
     "dal": "DAL", "nyg": "NYG", "phi": "PHI", "was": "WAS",
     "no":  "NO",  "tb":  "TB",  "car": "CAR", "atl": "ATL",
     "sf":  "SF",  "sea": "SEA", "ari": "ARI", "stl": "LAR",
+}
+
+TEAM_STAT_FILES = {
+    "pit": "steelers_report",
+    "bal": "ravens_report",
+    "cle": "browns_report",
+    "cin": "bengals_report",
+    "buf": "bills_report",
+    "ne":  "patriots_report",
+    "mia": "dolphins_report",
+    "nyj": "jets_report",
+    "ten": "titans_report",
+    "hou": "texans_report",
+    "ind": "colts_report",
+    "jax": "jaguars_report",
+    "kc":  "chiefs_report",
+    "oak": "raiders_report",
+    "den": "broncos_report",
+    "sd":  "chargers_report",
+    "gb":  "packers_report",
+    "chi": "bears_report",
+    "det": "lions_report",
+    "min": "vikings_report",
+    "dal": "cowboys_report",
+    "nyg": "giants_report",
+    "phi": "eagles_report",
+    "was": "commanders_report",
+    "no":  "saints_report",
+    "tb":  "buccaneers_report",
+    "car": "panthers_report",
+    "atl": "falcons_report",
+    "sf":  "49ers_report",
+    "sea": "seahawks_report",
+    "ari": "cardinals_report",
+    "stl": "rams_report",
 }
 
 # Season constants
