@@ -1,0 +1,150 @@
+================================================================================
+NFL TEAM STATISTICAL RANKINGS - SEASONS 1-6
+================================================================================
+
+Seasons Analyzed: 1, 2, 3, 4, 5, 6
+Total Teams: 32
+
+--------------------------------------------------------------------------------
+OVERALL OFFENSIVE RANKINGS (Average PPG)
+--------------------------------------------------------------------------------
+ 1. COWBOYS               32.1 PPG
+ 2. PACKERS               31.5 PPG
+ 3. SAINTS                31.4 PPG
+ 4. STEELERS              30.6 PPG
+ 5. GIANTS                30.5 PPG
+ 6. BEARS                 30.3 PPG
+ 7. PATRIOTS              30.0 PPG
+ 8. FALCONS               29.6 PPG
+ 9. DOLPHINS              29.6 PPG
+10. BILLS                 29.5 PPG
+11. CHIEFS                29.4 PPG
+12. VIKINGS               29.1 PPG
+13. BENGALS               29.1 PPG
+14. BUCCANEERS            28.7 PPG
+15. BROWNS                28.7 PPG
+16. RAVENS                28.6 PPG
+17. 49ERS                 28.6 PPG
+18. PANTHERS              28.3 PPG
+19. TITANS                27.7 PPG
+20. BRONCOS               27.6 PPG
+21. JAGUARS               27.3 PPG
+22. EAGLES                27.3 PPG
+23. CHARGERS              27.2 PPG
+24. JETS                  27.1 PPG
+25. LIONS                 26.6 PPG
+26. RAIDERS               26.1 PPG
+27. SEAHAWKS              26.1 PPG
+28. COLTS                 25.9 PPG
+29. TEXANS                25.7 PPG
+30. COMMANDERS            25.7 PPG
+31. RAMS                  25.4 PPG
+32. CARDINALS             25.2 PPG
+
+--------------------------------------------------------------------------------
+OVERALL DEFENSIVE RANKINGS (Average Points Allowed)
+--------------------------------------------------------------------------------
+ 1. 49ERS                388.7 PA/Season
+ 2. CHARGERS             409.0 PA/Season
+ 3. RAMS                 416.2 PA/Season
+ 4. BILLS                420.8 PA/Season
+ 5. DOLPHINS             420.8 PA/Season
+ 6. BRONCOS              422.2 PA/Season
+ 7. CHIEFS               427.2 PA/Season
+ 8. PACKERS              437.2 PA/Season
+ 9. CARDINALS            440.3 PA/Season
+10. FALCONS              447.8 PA/Season
+11. RAVENS               449.5 PA/Season
+12. GIANTS               450.5 PA/Season
+13. PATRIOTS             452.8 PA/Season
+14. BENGALS              454.5 PA/Season
+15. COWBOYS              455.3 PA/Season
+16. JETS                 456.8 PA/Season
+17. TEXANS               457.2 PA/Season
+18. TITANS               457.8 PA/Season
+19. COLTS                462.5 PA/Season
+20. LIONS                466.0 PA/Season
+21. BROWNS               466.3 PA/Season
+22. EAGLES               466.5 PA/Season
+23. SEAHAWKS             467.4 PA/Season
+24. BEARS                469.5 PA/Season
+25. STEELERS             477.0 PA/Season
+26. JAGUARS              479.0 PA/Season
+27. BUCCANEERS           479.7 PA/Season
+28. SAINTS               481.5 PA/Season
+29. VIKINGS              484.8 PA/Season
+30. COMMANDERS           485.0 PA/Season
+31. PANTHERS             493.8 PA/Season
+32. RAIDERS              496.5 PA/Season
+
+--------------------------------------------------------------------------------
+OVERALL TURNOVER DIFFERENTIAL RANKINGS
+--------------------------------------------------------------------------------
+ 1. FALCONS              +12.7 TO Diff/Season
+ 2. 49ERS                +11.7 TO Diff/Season
+ 3. PACKERS              +10.8 TO Diff/Season
+ 4. TITANS                +8.3 TO Diff/Season
+ 5. DOLPHINS              +8.0 TO Diff/Season
+ 6. CHIEFS                +7.5 TO Diff/Season
+ 7. COWBOYS               +6.3 TO Diff/Season
+ 8. RAVENS                +6.0 TO Diff/Season
+ 9. BILLS                 +3.2 TO Diff/Season
+10. BRONCOS               +3.0 TO Diff/Season
+11. VIKINGS               +3.0 TO Diff/Season
+12. EAGLES                +2.3 TO Diff/Season
+13. GIANTS                +2.0 TO Diff/Season
+14. BEARS                 +0.0 TO Diff/Season
+15. BROWNS                -0.5 TO Diff/Season
+16. STEELERS              -1.5 TO Diff/Season
+17. SAINTS                -1.8 TO Diff/Season
+18. PANTHERS              -2.2 TO Diff/Season
+19. COMMANDERS            -2.3 TO Diff/Season
+20. CHARGERS              -2.7 TO Diff/Season
+21. RAMS                  -2.8 TO Diff/Season
+22. COLTS                 -3.7 TO Diff/Season
+23. JAGUARS               -3.8 TO Diff/Season
+24. BUCCANEERS            -4.0 TO Diff/Season
+25. PATRIOTS              -4.3 TO Diff/Season
+26. BENGALS               -5.3 TO Diff/Season
+27. JETS                  -5.5 TO Diff/Season
+28. LIONS                 -6.7 TO Diff/Season
+29. RAIDERS               -7.2 TO Diff/Season
+30. SEAHAWKS              -7.6 TO Diff/Season
+31. CARDINALS             -9.2 TO Diff/Season
+32. TEXANS               -15.5 TO Diff/Season
+
+--------------------------------------------------------------------------------
+OVERALL POINT DIFFERENTIAL RANKINGS
+--------------------------------------------------------------------------------
+ 1. PACKERS                +590 Point Diff (6 seasons)
+ 2. 49ERS                  +585 Point Diff (6 seasons)
+ 3. COWBOYS                +542 Point Diff (6 seasons)
+ 4. DOLPHINS               +494 Point Diff (6 seasons)
+ 5. BILLS                  +484 Point Diff (6 seasons)
+ 6. CHIEFS                 +436 Point Diff (6 seasons)
+ 7. GIANTS                 +408 Point Diff (6 seasons)
+ 8. PATRIOTS               +343 Point Diff (6 seasons)
+ 9. FALCONS                +332 Point Diff (6 seasons)
+10. CHARGERS               +320 Point Diff (6 seasons)
+11. SAINTS                 +314 Point Diff (6 seasons)
+12. BRONCOS                +282 Point Diff (6 seasons)
+13. BEARS                  +274 Point Diff (6 seasons)
+14. STEELERS               +259 Point Diff (6 seasons)
+15. BENGALS                +241 Point Diff (6 seasons)
+16. RAVENS                 +220 Point Diff (6 seasons)
+17. BROWNS                 +130 Point Diff (6 seasons)
+18. RAMS                    +94 Point Diff (6 seasons)
+19. TITANS                  +79 Point Diff (6 seasons)
+20. VIKINGS                 +59 Point Diff (6 seasons)
+21. BUCCANEERS              +49 Point Diff (6 seasons)
+22. JETS                    +23 Point Diff (6 seasons)
+23. EAGLES                  -14 Point Diff (6 seasons)
+24. PANTHERS                -76 Point Diff (6 seasons)
+25. CARDINALS               -71 Point Diff (6 seasons)
+26. LIONS                   -83 Point Diff (6 seasons)
+27. JAGUARS                 -89 Point Diff (6 seasons)
+28. TEXANS                 -122 Point Diff (6 seasons)
+29. SEAHAWKS               -142 Point Diff (6 seasons)
+30. COLTS                  -133 Point Diff (6 seasons)
+31. COMMANDERS             -289 Point Diff (6 seasons)
+32. RAIDERS                -317 Point Diff (6 seasons)
