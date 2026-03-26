@@ -9,18 +9,6 @@ import config
 # once per-game stat tracking is implemented in the data pipeline
 # At that point rolling will also include: rolling_yards_pg, rolling_turnover_diff,
 # rolling_redzone_pct, rolling_third_down_pct
-
-
-# rolling.py
-# This module answers: how has a team been performing recently?
-#
-# FUNCTION 1 — get_rolling_stats(team_id, games, as_of_week, season_id, window=None)
-# Returns a team's stats over their last N games as of a specific week
-# CRITICAL: only include games BEFORE as_of_week in season_id — never include
-# the game being predicted or any future games (this is data leakage)
-# If window is None use config.ROLLING_WINDOW
-# If team has fewer than config.MIN_GAMES_PLAYED return None — not enough data
-
 def get_rolling_stats(team_id, games, as_of_week, season_id, window=None):
     cutoff = as_of_week - 1
     if window is None:
@@ -209,19 +197,3 @@ def get_season_stats(team_id, games, season_id):
 #     print("--- get_season_stats ---")
 #     result2 = get_season_stats("dal", games, season_id=1)
 #     print(result2)
-
-
-
-
-
-
-# Nudge: filter games to only include completed games for team_id
-#        before as_of_week in season_id first, then take the last N
-# Nudge: sort the filtered games by week before taking the window
-#        otherwise you might get the wrong N games
-# Nudge: point_diff and avg_margin are different —
-#        point_diff is total, avg_margin is per game
-#
-# VERIFICATION
-# Pick a team and a specific week and manually verify the output
-# matches what you'd expect from the standings data
