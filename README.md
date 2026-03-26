@@ -29,6 +29,26 @@ Every time the model runs — whether triggered by new weekly results or updated
 - **Road performance** — tracks teams that consistently over or underperform on the road
 - **Playoff clutch factor** — measures whether a team historically outperforms or underperforms their regular season rating in the postseason
 - **Rolling performance** — recent form weighted more heavily than season-long averages
+- **Elo ratings** — a continuously updated skill rating for every team, recalculated after every completed game across all seasons
+
+### Elo Rating System
+
+Each team starts at 1500 at the beginning of Season 1. After every game, both teams' ratings are updated based on the result and how surprising it was — beating a highly rated opponent earns more points than beating a weak one. Playoff games are weighted more heavily than regular season games. Ratings carry over between seasons so a dynasty team builds a higher rating over time.
+
+The Elo system tracks a full history of every team's rating after every game, enabling week-by-week and season-by-season progression analysis.
+
+**All-time Elo standings through Season 7:**
+
+| Rank | Team | Final Elo | Peak Elo | Peak Season/Week |
+|------|------|-----------|----------|-----------------|
+| 1 | Bears | 1628.7 | 1628.7 | S7 W21 |
+| 2 | Saints | 1618.3 | 1636.7 | S7 W16 |
+| 3 | Ravens | 1599.4 | 1614.4 | S7 W20 |
+| 4 | Steelers | 1573.3 | 1599.7 | S7 W16 |
+| 5 | 49ers | 1565.8 | 1578.9 | S7 W18 |
+
+**All-time peak Elo:** Browns at 1668.5 (S5 W5)
+**All-time lowest Elo:** Commanders at 1368.0 (S3 W1)
 
 ### Playoff format
 
@@ -42,9 +62,11 @@ madden-predict/
 ├── data/
 │   ├── raw/                  # game result exports + per-team stat JSONs
 │   └── processed/            # built feature dataset + prediction logs
+├── notebooks/
+│   └── elo_progression.py    # Elo visualization — per season bar charts + all-time progression
 ├── src/
 │   ├── data/                 # loaders + validators
-│   ├── features/             # rolling stats, splits, h2h, playoff, ratings
+│   ├── features/             # rolling stats, splits, h2h, playoff, elo, ratings
 │   ├── model/                # win probability + evaluation
 │   ├── simulation/           # full season, standings, bracket
 │   ├── tracking/             # prediction logger + diff engine
