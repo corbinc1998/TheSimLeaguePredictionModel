@@ -37,7 +37,7 @@ Each team starts at 1500 at the beginning of Season 1. After every game, both te
 
 The Elo system tracks a full history of every team's rating after every game, enabling week-by-week and season-by-season progression analysis.
 
-**All-time Elo standings through Season 7:**
+### All-time Elo standings through Season 7
 
 | Rank | Team | Final Elo | Peak Elo | Peak Season/Week |
 |------|------|-----------|----------|-----------------|
@@ -46,6 +46,11 @@ The Elo system tracks a full history of every team's rating after every game, en
 | 3 | Ravens | 1599.4 | 1614.4 | S7 W20 |
 | 4 | Steelers | 1573.3 | 1599.7 | S7 W16 |
 | 5 | 49ers | 1565.8 | 1578.9 | S7 W18 |
+| 6 | Packers | 1562.0 | 1645.3 | S6 W2 |
+| 7 | Bills | 1556.6 | 1622.6 | S3 W8 |
+| 8 | Patriots | 1535.8 | 1570.2 | S5 W16 |
+| 9 | Chargers | 1533.0 | 1584.1 | S5 W20 |
+| 10 | Chiefs | 1532.8 | 1596.6 | S5 W2 |
 
 **All-time peak Elo:** Browns at 1668.5 (S5 W5)
 **All-time lowest Elo:** Commanders at 1368.0 (S3 W1)
