@@ -54,11 +54,11 @@ ABBR = {
     "pit": "PIT", "bal": "BAL", "cle": "CLE", "cin": "CIN",
     "buf": "BUF", "ne":  "NE",  "mia": "MIA", "nyj": "NYJ",
     "ten": "TEN", "hou": "HOU", "ind": "IND", "jax": "JAX",
-    "kc":  "KC",  "oak": "LV",  "den": "DEN", "sd":  "LAC",
+    "kc":  "KC",  "oak": "OAK",  "den": "DEN", "sd":  "SD",
     "gb":  "GB",  "chi": "CHI", "det": "DET", "min": "MIN",
     "dal": "DAL", "nyg": "NYG", "phi": "PHI", "was": "WAS",
     "no":  "NO",  "tb":  "TB",  "car": "CAR", "atl": "ATL",
-    "sf":  "SF",  "sea": "SEA", "ari": "ARI", "stl": "LAR",
+    "sf":  "SF",  "sea": "SEA", "ari": "ARI", "stl": "STL",
 }
 
 TEAM_STAT_FILES = {
