@@ -32,3 +32,31 @@ def get_playoff_record(team_id, games):
 # games = load_games()
 # print(get_playoff_record("chi", games))
 # print(get_playoff_record("was", games))
+
+def get_playoff_clutch(team_id, games):
+    points = 0
+    regular_season_games = 0
+    playoff_record = get_playoff_record(team_id, games)
+    if playoff_record is None:
+        return 0.0
+    for game in games:
+        if not game["completed"]:
+            continue
+        if game.get("isPlayoff"):
+            continue
+        if game["homeTeamId"] == team_id:
+            points += game["homeScore"]
+            regular_season_games += 1
+        elif game["awayTeamId"] == team_id:
+            points += game["awayScore"]
+            regular_season_games += 1
+    if regular_season_games == 0:
+        return 0.0
+    regular_season_ppg = points / regular_season_games
+    return playoff_record["ppg"] - regular_season_ppg
+
+# Testing
+# games = load_games()
+# print(get_playoff_clutch("chi", games))
+# print(get_playoff_clutch("no", games))
+# print(get_playoff_clutch("was", games))
