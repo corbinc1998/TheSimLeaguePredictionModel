@@ -193,7 +193,7 @@ ELO_HOME_ADVANTAGE = 65   # Elo points added to home team before calculating exp
 
 
 # Logistic scale factor
-LOGISTIC_SCALE = 0.13
+LOGISTIC_SCALE = 0.08
 # Raw home field advantage added to every home team's edge regardless of which teams are playing
 HOME_FIELD_ADVANTAGE = 2.8
 # Rating floor and ceiling
