@@ -175,6 +175,16 @@ WEIGHTS = {
     "streak":           0.3,   # how much current win/loss streak matters
 }
 
+STAT_WEIGHTS = {
+    "ppg":              1.1,
+    "points_allowed":   1.1,
+    "turnover_diff":    0.55,
+    "redzone_td_pct":   0.12,
+    "third_down_pct":   0.08,
+}
+
+ELO_RATING_WEIGHT = 0.5
+
 # Elo rating system
 ELO_INITIAL = 1500        # starting Elo for every team at the beginning of the sim
 ELO_K_FACTOR = 20         # how much each game shifts the rating — higher = more volatile
