@@ -35,6 +35,8 @@ def predict_score(home_rating, away_rating):
     baseline = config.STAT_BASELINES["ppg"]
     home_score = round(baseline + (home_rating - 50) * 0.5)
     away_score = round(baseline + (away_rating - 50) * 0.5)
+    if home_score == away_score:
+        home_score += 1
     return {"home_score": home_score, "away_score": away_score}
 
 
