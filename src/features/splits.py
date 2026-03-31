@@ -9,7 +9,7 @@ def get_home_away_splits(team_id, games):
     # homeTeamId homeScore
     # awayTeamId awayScore
     for game in games:
-        if not game["completed"]:
+        if not game.get("completed", False):
             continue
         # Home
         if game["homeTeamId"] == team_id:

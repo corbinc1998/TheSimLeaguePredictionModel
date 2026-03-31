@@ -9,7 +9,7 @@ def compute_elo_ratings(games):
     elo_history = [] 
     games = sorted(games, key=lambda x: (x["season"], x["week"]))
     for game in games:
-        if not game["completed"]:
+        if not game.get("completed", False):
             continue
         if game.get("isPlayoff"):
             k = config.ELO_K_PLAYOFF
@@ -70,7 +70,7 @@ def get_best_wins(team_id, games, elo_history):
         history_by_game[snapshot["game_id"]] = snapshot
     wins = []
     for game in games:
-        if not game["completed"]:
+        if not game.get("completed", False):
             continue
         if game['homeTeamId'] == team_id and game['homeScore'] > game['awayScore']:
             snapshot = history_by_game[game["id"]]

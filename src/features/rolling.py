@@ -15,7 +15,7 @@ def get_rolling_stats(team_id, games, as_of_week, season_id, window=None):
             window = config.ROLLING_WINDOW
     filtered = []
     for game in games:
-        if not game["completed"]:
+        if not game.get("completed", False):
             continue
         if game["season"] == season_id and game["week"] <= cutoff:
             if game["homeTeamId"] == team_id or game["awayTeamId"] == team_id:
@@ -107,7 +107,7 @@ def get_rolling_stats(team_id, games, as_of_week, season_id, window=None):
 def get_season_stats(team_id, games, season_id):
     filtered = []
     for game in games:
-        if not game["completed"]:
+        if not game.get("completed", False):
             continue
         if game["season"] == season_id:
             if game["homeTeamId"] == team_id or game["awayTeamId"] == team_id:

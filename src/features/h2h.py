@@ -7,7 +7,7 @@ import config
 def get_h2h_games(team_a, team_b, games):
     h2h_games = []
     for game in games:
-        if not game["completed"]:
+        if not game.get("completed", False):
             continue
         if (game["homeTeamId"] == team_a and game["awayTeamId"] == team_b) or (game["homeTeamId"] == team_b and game["awayTeamId"] == team_a):
             h2h_games.append(game)
