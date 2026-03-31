@@ -15,11 +15,14 @@ def build_team_rating(team_id, games, team_stats, as_of_week, season_id, elo_rat
         base_rating += (season_stats["ppg"] - config.STAT_BASELINES["ppg"]) * config.STAT_WEIGHTS["ppg"]
         base_rating += (config.STAT_BASELINES["points_allowed"] - season_stats["points_allowed_per_game"]) * config.STAT_WEIGHTS["points_allowed"]
 
-    if team_stats and str(season_id) in team_stats.get("season_by_season", {}):
-        s = team_stats["season_by_season"][str(season_id)]
-        base_rating += (s["turnovers"]["differential"] - config.STAT_BASELINES["turnover_diff"]) * config.STAT_WEIGHTS["turnover_diff"]
-        base_rating += (s["efficiency"]["redzone_td_pct"] * 100 - config.STAT_BASELINES["redzone_td_pct"]) * config.STAT_WEIGHTS["redzone_td_pct"]
-        base_rating += (s["efficiency"]["third_down_pct"] - config.STAT_BASELINES["third_down_pct"]) * config.STAT_WEIGHTS["third_down_pct"]
+    if team_stats and "season_by_season" in team_stats:
+        available = sorted(team_stats["season_by_season"].keys(), key=lambda x: int(x))
+        best_season = str(season_id) if str(season_id) in team_stats["season_by_season"] else available[-1] if available else None
+        if best_season:
+            s = team_stats["season_by_season"][best_season]
+            base_rating += (s["turnovers"]["differential"] - config.STAT_BASELINES["turnover_diff"]) * config.STAT_WEIGHTS["turnover_diff"]
+            base_rating += (s["efficiency"]["redzone_td_pct"] * 100 - config.STAT_BASELINES["redzone_td_pct"]) * config.STAT_WEIGHTS["redzone_td_pct"]
+            base_rating += (s["efficiency"]["third_down_pct"] - config.STAT_BASELINES["third_down_pct"]) * config.STAT_WEIGHTS["third_down_pct"]
 
     if rolling_stats:
         base_rating += (rolling_stats["ppg"] - config.STAT_BASELINES["ppg"]) * config.STAT_WEIGHTS["ppg"] * 0.5
