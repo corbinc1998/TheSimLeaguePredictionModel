@@ -28,14 +28,17 @@ def load_games():
         season_number = get_season_number(season_name)
         for game in season["games"]:
             game["season"] = season_number
+            if "completed" not in game:
+                game["completed"] = game.get("status") == "final"
             games.append(game)
+
+    return games
 
             # games = load_games()
             # print(len(games))
             # print(games[0])
 
-    return games
-
+    
 
 
 
