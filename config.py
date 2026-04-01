@@ -176,14 +176,14 @@ WEIGHTS = {
 }
 
 STAT_WEIGHTS = {
-    "ppg":              1.1,
-    "points_allowed":   1.1,
+    "ppg":              0.8,
+    "points_allowed":   0.8,
     "turnover_diff":    0.55,
     "redzone_td_pct":   0.12,
     "third_down_pct":   0.08,
 }
 
-ELO_RATING_WEIGHT = 0.5
+ELO_RATING_WEIGHT = 0.3
 
 # Elo rating system
 ELO_INITIAL = 1500        # starting Elo for every team at the beginning of the sim
@@ -195,7 +195,7 @@ ELO_HOME_ADVANTAGE = 65   # Elo points added to home team before calculating exp
 # Logistic scale factor
 LOGISTIC_SCALE = 0.08
 # Raw home field advantage added to every home team's edge regardless of which teams are playing
-HOME_FIELD_ADVANTAGE = 2.8
+HOME_FIELD_ADVANTAGE = 1.5
 # Rating floor and ceiling
 RATING_MIN = 25
 RATING_MAX = 82
