@@ -11,22 +11,27 @@ def build_team_rating(team_id, games, team_stats, as_of_week, season_id, elo_rat
     clutch = playoff.get_playoff_clutch(team_id, games)
     base_rating = 50
 
-    if season_stats:
-        base_rating += (season_stats["ppg"] - config.STAT_BASELINES["ppg"]) * config.STAT_WEIGHTS["ppg"]
-        base_rating += (config.STAT_BASELINES["points_allowed"] - season_stats["points_allowed_per_game"]) * config.STAT_WEIGHTS["points_allowed"]
 
+    # Use team_stats JSON as primary source
+    # Fall back to season_stats from rolling only if team_stats unavailable
     if team_stats and "season_by_season" in team_stats:
         available = sorted(team_stats["season_by_season"].keys(), key=lambda x: int(x))
         best_season = str(season_id) if str(season_id) in team_stats["season_by_season"] else available[-1] if available else None
         if best_season:
             s = team_stats["season_by_season"][best_season]
+            base_rating += (s["offense"]["ppg"] - config.STAT_BASELINES["ppg"]) * config.STAT_WEIGHTS["ppg"]
+            base_rating += (config.STAT_BASELINES["points_allowed"] - s["defense"]["points_allowed"] / 17) * config.STAT_WEIGHTS["points_allowed"]
             base_rating += (s["turnovers"]["differential"] - config.STAT_BASELINES["turnover_diff"]) * config.STAT_WEIGHTS["turnover_diff"]
             base_rating += (s["efficiency"]["redzone_td_pct"] * 100 - config.STAT_BASELINES["redzone_td_pct"]) * config.STAT_WEIGHTS["redzone_td_pct"]
             base_rating += (s["efficiency"]["third_down_pct"] - config.STAT_BASELINES["third_down_pct"]) * config.STAT_WEIGHTS["third_down_pct"]
+    elif season_stats:
+        base_rating += (season_stats["ppg"] - config.STAT_BASELINES["ppg"]) * config.STAT_WEIGHTS["ppg"]
+        base_rating += (config.STAT_BASELINES["points_allowed"] - season_stats["points_allowed_per_game"]) * config.STAT_WEIGHTS["points_allowed"]
 
+    # Rolling as a small supplement for recent form only
     if rolling_stats:
-        base_rating += (rolling_stats["ppg"] - config.STAT_BASELINES["ppg"]) * config.STAT_WEIGHTS["ppg"] * 0.5
-        base_rating += (config.STAT_BASELINES["points_allowed"] - rolling_stats["points_allowed_per_game"]) * config.STAT_WEIGHTS["points_allowed"] * 0.5
+        base_rating += (rolling_stats["ppg"] - config.STAT_BASELINES["ppg"]) * config.STAT_WEIGHTS["ppg"] * 0.2
+        base_rating += (config.STAT_BASELINES["points_allowed"] - rolling_stats["points_allowed_per_game"]) * config.STAT_WEIGHTS["points_allowed"] * 0.2
 
     if team_id in elo_ratings:
         base_rating += (elo_ratings[team_id] - 1500) / 400 * config.ELO_RATING_WEIGHT
@@ -34,6 +39,8 @@ def build_team_rating(team_id, games, team_stats, as_of_week, season_id, elo_rat
     if clutch:
         base_rating += clutch * config.WEIGHTS["playoff_clutch"]
 
+    # Compress rating toward 50 to reduce extreme predictions
+    base_rating = 50 + (base_rating - 50) * 0.5
     return max(config.RATING_MIN, min(config.RATING_MAX, base_rating))
 
 
@@ -76,30 +83,30 @@ def build_matchup_features(home_id, away_id, games, team_stats_map, as_of_week, 
 
 
 # Testing
-# if __name__ == "__main__":
-#     games = load_games()
-#     elo_ratings, elo_history = elo.compute_elo_ratings(games)
-#     print("\n--- All Team Ratings ---")
-#     all_ratings = {}
-#     for team_id in config.TEAM_IDS:
-#         try:
-#             team_stats = load_team_stats(team_id)
-#         except:
-#             team_stats = None
-#         rating = build_team_rating(team_id, games, team_stats, as_of_week=22, season_id=7, elo_ratings=elo_ratings)
-#         all_ratings[team_id] = rating
+if __name__ == "__main__":
+    games = load_games()
+    elo_ratings, elo_history = elo.compute_elo_ratings(games)
+    print("\n--- All Team Ratings ---")
+    all_ratings = {}
+    for team_id in config.TEAM_IDS:
+        try:
+            team_stats = load_team_stats(team_id)
+        except:
+            team_stats = None
+        rating = build_team_rating(team_id, games, team_stats, as_of_week=22, season_id=7, elo_ratings=elo_ratings)
+        all_ratings[team_id] = rating
 
-#     for team_id, rating in sorted(all_ratings.items(), key=lambda x: -x[1]):
-#         print(f"{config.ABBR[team_id]:<5} {round(rating, 1)}")
-#     # load all team stats into a map
-#     team_stats_map = {}
-#     for tid in config.TEAM_IDS:
-#         try:
-#             team_stats_map[tid] = load_team_stats(tid)
-#         except:
-#             team_stats_map[tid] = None
+    for team_id, rating in sorted(all_ratings.items(), key=lambda x: -x[1]):
+        print(f"{config.ABBR[team_id]:<5} {round(rating, 1)}")
+    # load all team stats into a map
+    team_stats_map = {}
+    for tid in config.TEAM_IDS:
+        try:
+            team_stats_map[tid] = load_team_stats(tid)
+        except:
+            team_stats_map[tid] = None
 
-#     print("\n--- Matchup Features: Bears vs Packers ---")
-#     features = build_matchup_features("chi", "gb", games, team_stats_map, as_of_week=22, season_id=7, elo_ratings=elo_ratings, is_playoff=False)
-#     for k, v in features.items():
-#         print(f"  {k}: {v}")
+    print("\n--- Matchup Features: Bears vs Packers ---")
+    features = build_matchup_features("chi", "gb", games, team_stats_map, as_of_week=22, season_id=7, elo_ratings=elo_ratings, is_playoff=False)
+    for k, v in features.items():
+        print(f"  {k}: {v}")
