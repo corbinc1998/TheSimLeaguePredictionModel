@@ -5,6 +5,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__)))
 import argparse
 from src.data.loader import load_games, load_team_stats
 from src.features.elo import compute_elo_ratings
+from src.features.ratings import build_team_rating
 from src.simulation.season import predict_season
 from src.simulation.standings import build_standings, get_playoff_seeds
 from src.simulation.bracket import simulate_bracket
@@ -56,7 +57,21 @@ def run(trigger, season_id, current_week):
     if "champion" in bracket:
         print(f"  Projected Super Bowl champion: {config.ABBR[bracket['champion']]}")
 
-    # Step 6 — Diff against previous run
+    # Step 6 — Build team ratings snapshot
+    print("\nBuilding team ratings snapshot...")
+    team_ratings_snapshot = {}
+    for tid in config.TEAM_IDS:
+        try:
+            team_ratings_snapshot[tid] = round(build_team_rating(
+                tid, games, team_stats_map.get(tid),
+                as_of_week=current_week,
+                season_id=season_id,
+                elo_ratings=elo_ratings
+            ), 2)
+        except:
+            team_ratings_snapshot[tid] = None
+
+    # Step 7 — Diff against previous run
     previous_run = get_latest_run()
     new_run = create_run(
         trigger=trigger,
@@ -65,7 +80,9 @@ def run(trigger, season_id, current_week):
         predictions=results,
         standings=standings,
         seeds=seeds,
-        bracket=bracket
+        bracket=bracket,
+        elo_ratings={k: round(v, 1) for k, v in elo_ratings.items()},
+        team_ratings=team_ratings_snapshot
     )
 
     if previous_run:
@@ -105,7 +122,7 @@ def run(trigger, season_id, current_week):
     else:
         print("\nNo previous run found — this is the baseline prediction")
 
-    # Step 7 — Save run
+    # Step 8 — Save run
     save_run(new_run)
     print(f"\nRun saved: {new_run['id']}")
     print(f"{'='*50}\n")
