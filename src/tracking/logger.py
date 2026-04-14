@@ -7,7 +7,7 @@ from datetime import datetime
 import config
 
 
-def create_run(trigger, season_id, current_week, predictions, standings, seeds, bracket):
+def create_run(trigger, season_id, current_week, predictions, standings, seeds, bracket, elo_ratings=None, team_ratings=None):
     return {
         "id": datetime.now().strftime("%Y%m%d%H%M%S%f"),
         "timestamp": datetime.now().isoformat(),
@@ -18,6 +18,8 @@ def create_run(trigger, season_id, current_week, predictions, standings, seeds, 
         "standings": standings,
         "seeds": seeds,
         "bracket": bracket,
+        "elo_ratings": elo_ratings or {},
+        "team_ratings": team_ratings or {},
     }
 
 
@@ -46,6 +48,7 @@ def get_latest_run():
 if __name__ == "__main__":
     from src.data.loader import load_games, load_team_stats
     from src.features.elo import compute_elo_ratings
+    from src.features.ratings import build_team_rating
     from src.simulation.season import predict_season
     from src.simulation.standings import build_standings, build_division_standings, get_playoff_seeds
     from src.simulation.bracket import simulate_bracket
@@ -65,6 +68,16 @@ if __name__ == "__main__":
     seeds = get_playoff_seeds(standings, games)
     bracket = simulate_bracket(seeds, games, team_stats_map, season_id=8, elo_ratings=elo_ratings)
 
+    team_ratings_snapshot = {}
+    for tid in config.TEAM_IDS:
+        try:
+            team_ratings_snapshot[tid] = round(build_team_rating(
+                tid, games, team_stats_map.get(tid),
+                as_of_week=1, season_id=8, elo_ratings=elo_ratings
+            ), 2)
+        except:
+            team_ratings_snapshot[tid] = None
+
     run = create_run(
         trigger="Initial S8 prediction",
         season_id=8,
@@ -72,7 +85,9 @@ if __name__ == "__main__":
         predictions=results,
         standings=standings,
         seeds=seeds,
-        bracket=bracket
+        bracket=bracket,
+        elo_ratings={k: round(v, 1) for k, v in elo_ratings.items()},
+        team_ratings=team_ratings_snapshot
     )
 
     save_run(run)
