@@ -85,6 +85,10 @@ def run(trigger, season_id, current_week):
         team_ratings=team_ratings_snapshot
     )
 
+    sorted_ratings = sorted(team_ratings_snapshot.items(), key=lambda x: -x[1] if x[1] else 0)
+    print("\n  Top 5:   " + " | ".join(f"{config.ABBR[t]} {r}" for t, r in sorted_ratings[:5]))
+    print("  Bottom 5: " + " | ".join(f"{config.ABBR[t]} {r}" for t, r in sorted_ratings[-5:]))
+
     if previous_run:
         print("\nDiffing against previous run...")
         diff = diff_runs(previous_run, new_run)
