@@ -14,6 +14,24 @@ from src.tracking.diff import diff_runs
 import config
 
 
+def print_power_rankings(team_ratings_snapshot, elo_ratings, standings):
+    teams = []
+    for tid in config.TEAM_IDS:
+        rating = team_ratings_snapshot.get(tid) or 0
+        elo = round(elo_ratings.get(tid, 0), 1)
+        w = standings[tid]["w"]
+        l = standings[tid]["l"]
+        t = standings[tid]["t"]
+        teams.append({"team_id": tid, "rating": rating, "elo": elo, "w": w, "l": l, "t": t})
+
+    # Sort by rating then elo as tiebreaker
+    teams.sort(key=lambda x: (-x["rating"], -x["elo"]))
+
+    print("\n=== POWER RANKINGS ===")
+    for i, t in enumerate(teams):
+        record = f"{t['w']}-{t['l']}-{t['t']}" if t['t'] > 0 else f"{t['w']}-{t['l']}"
+        print(f"  {i+1:>2}. {config.ABBR[t['team_id']]:<5} Rating: {t['rating']:<6} Elo: {t['elo']:<8} Projected: {record}")
+
 def run(trigger, season_id, current_week):
     print(f"\n{'='*50}")
     print(f"MADDEN PREDICT — Season {season_id} Week {current_week}")
@@ -88,6 +106,8 @@ def run(trigger, season_id, current_week):
     sorted_ratings = sorted(team_ratings_snapshot.items(), key=lambda x: -x[1] if x[1] else 0)
     print("\n  Top 5:   " + " | ".join(f"{config.ABBR[t]} {r}" for t, r in sorted_ratings[:5]))
     print("  Bottom 5: " + " | ".join(f"{config.ABBR[t]} {r}" for t, r in sorted_ratings[-5:]))
+
+    print_power_rankings(team_ratings_snapshot, elo_ratings, standings)
 
     if previous_run:
         print("\nDiffing against previous run...")
