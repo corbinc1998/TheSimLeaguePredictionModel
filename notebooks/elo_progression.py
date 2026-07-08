@@ -121,6 +121,55 @@ def plot_heatmap(elo_history):
     plt.show()
 
 
+def plot_trajectory(elo_history):
+    """Line graph of each team's Elo at the end of every season."""
+    seasons = sorted(set(s["season"] for s in elo_history))
+    teams   = config.TEAM_IDS
+
+    # Build {team_id: [elo_s1, elo_s2, ...]} using end-of-season snapshot
+    trajectories = {}
+    for team_id in teams:
+        row = []
+        for season_id in seasons:
+            final = get_final_elo_for_season(season_id, elo_history)
+            row.append(final.get(team_id, 1500))
+        trajectories[team_id] = row
+
+    # Sort teams by final Elo so the legend reads top-to-bottom
+    sorted_teams = sorted(teams, key=lambda t: -trajectories[t][-1])
+
+    # 32 distinct colors via tab20 + tab20b
+    cmap_a = plt.cm.get_cmap("tab20",  20)
+    cmap_b = plt.cm.get_cmap("tab20b", 20)
+    palette = [cmap_a(i) for i in range(20)] + [cmap_b(i) for i in range(12)]
+
+    fig, ax = plt.subplots(figsize=(18, 9))
+
+    for i, team_id in enumerate(sorted_teams):
+        elos  = trajectories[team_id]
+        abbr  = config.ABBR[team_id]
+        color = palette[i]
+        ax.plot(seasons, elos, marker="o", markersize=4,
+                linewidth=1.6, color=color, label=abbr)
+        # Label the final point
+        ax.annotate(abbr, xy=(seasons[-1], elos[-1]),
+                    xytext=(4, 0), textcoords="offset points",
+                    fontsize=6.5, color=color, va="center")
+
+    ax.axhline(y=1500, color="gray", linestyle="--", alpha=0.4, linewidth=1, label="Baseline (1500)")
+    ax.set_xticks(seasons)
+    ax.set_xticklabels([f"S{s}" for s in seasons], fontsize=10)
+    ax.set_xlabel("Season", fontsize=11)
+    ax.set_ylabel("Elo Rating", fontsize=11)
+    ax.set_title("Team Elo Trajectory — All Seasons\nMadden 10 Fantasy Draft Simulation",
+                 fontsize=14, fontweight="bold")
+    ax.legend(title="Team (by final Elo)", fontsize=7, title_fontsize=8,
+              ncol=2, loc="upper left", framealpha=0.8)
+    ax.grid(axis="y", alpha=0.3)
+    plt.tight_layout()
+    plt.show()
+
+
 def print_elo_stats(elo_history):
     teams = config.TEAM_IDS
 
@@ -176,15 +225,17 @@ if __name__ == "__main__":
     games = load_games()
     ratings, history = compute_elo_ratings(games)
 
-    season_input = input("Enter season (1-7, ALL, or HEATMAP): ").strip().upper()
+    season_input = input("Enter season (1-8, ALL, HEATMAP, or TRAJECTORY): ").strip().upper()
 
     if season_input == "ALL":
         plot_all_seasons_bar(history)
     elif season_input == "HEATMAP":
         plot_heatmap(history)
-    elif season_input.isdigit() and 1 <= int(season_input) <= 7:
+    elif season_input == "TRAJECTORY":
+        plot_trajectory(history)
+    elif season_input.isdigit() and 1 <= int(season_input) <= 8:
         plot_season_bar(int(season_input), history)
     else:
-        print("Invalid input — enter a number between 1 and 7, ALL, or HEATMAP")
+        print("Invalid input — enter a number between 1 and 8, ALL, HEATMAP, or TRAJECTORY")
 
     print_elo_stats(history)
