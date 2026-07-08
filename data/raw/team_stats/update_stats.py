@@ -1,7 +1,7 @@
 """
 update_stats.py
 ------------------
-Reads Season 7 data from the Sim Stats xlsx and updates each team's
+Reads Season 8 data from the Sim Stats xlsx and updates each team's
 JSON report in the team_stats folder.
 
 Usage:
@@ -91,15 +91,15 @@ def get(d, team, key, default=0):
 print(f"Reading {XLSX_PATH}...")
 sheets = pd.read_excel(XLSX_PATH, sheet_name=None, header=0)
 
-# ─── Parse S7 sheets ──────────────────────────────────────────────────────────
+# ─── Parse S8 sheets ──────────────────────────────────────────────────────────
 off_rows, def_rows, conv_rows, rz_rows, pen_rows, to_rows = {}, {}, {}, {}, {}, {}
 
-for _, r in sheets["S7 Offense"].iterrows():
+for _, r in sheets["S8 Offense"].iterrows():
     t = norm(r.iloc[0])
     if not t or t in ("TEAM", "NAN", "NONE"):
         continue
     off_rows[t] = dict(
-        total_yards=safe_float(r.iloc[2]),   # Total Offense (pass+rush)
+        total_yards=safe_float(r.iloc[2]),
         pass_yards=safe_float(r.iloc[3]),
         rush_yards=safe_float(r.iloc[4]),
         ppg=safe_float(r.iloc[5]),
@@ -108,7 +108,7 @@ for _, r in sheets["S7 Offense"].iterrows():
         first_downs=safe_int(r.iloc[9]),
     )
 
-for _, r in sheets["S7 Defense"].iterrows():
+for _, r in sheets["S8 Defense"].iterrows():
     t = norm(r.iloc[0])
     if not t or t in ("TEAM", "NAN", "NONE"):
         continue
@@ -122,7 +122,7 @@ for _, r in sheets["S7 Defense"].iterrows():
         interceptions=safe_int(r.iloc[7]),
     )
 
-for _, r in sheets["S7 Conversions"].iterrows():
+for _, r in sheets["S8 Conversions"].iterrows():
     t = norm(r.iloc[0])
     if not t or t in ("TEAM", "NAN", "NONE"):
         continue
@@ -131,7 +131,7 @@ for _, r in sheets["S7 Conversions"].iterrows():
         fourth_down_pct=safe_float(r.iloc[6]),
     )
 
-for _, r in sheets["S7 RedZone"].iterrows():
+for _, r in sheets["S8 RedZone"].iterrows():
     t = norm(r.iloc[0])
     if not t or t in ("TEAM", "NAN", "NONE"):
         continue
@@ -143,7 +143,7 @@ for _, r in sheets["S7 RedZone"].iterrows():
         redzone_td_pct=round(td / att, 4) if att else 0,
     )
 
-for _, r in sheets["S7 Penalties"].iterrows():
+for _, r in sheets["S8 Penalties"].iterrows():
     t = norm(r.iloc[0])
     if not t or t in ("TEAM", "NAN", "NONE"):
         continue
@@ -152,7 +152,7 @@ for _, r in sheets["S7 Penalties"].iterrows():
         penalty_yards=safe_int(r.iloc[2]),
     )
 
-for _, r in sheets["S7 Turnovers"].iterrows():
+for _, r in sheets["S8 Turnovers"].iterrows():
     t = norm(r.iloc[0])
     if not t or t in ("TEAM", "NAN", "NONE"):
         continue
@@ -169,45 +169,39 @@ for _, r in sheets["S7 Turnovers"].iterrows():
 all_teams = sorted(
     set(off_rows) | set(def_rows) | set(conv_rows) | set(rz_rows) | set(pen_rows) | set(to_rows)
 )
-print(f"Found {len(all_teams)} teams in S7 data")
+print(f"Found {len(all_teams)} teams in S8 data")
 
 # ─── Compute rankings ─────────────────────────────────────────────────────────
 ranks = {
-    # Offense — higher = better
     "total_yards":      rank_teams(all_teams, lambda t: get(off_rows, t, "total_yards"),    ascending=False),
     "pass_yards":       rank_teams(all_teams, lambda t: get(off_rows, t, "pass_yards"),      ascending=False),
     "rush_yards":       rank_teams(all_teams, lambda t: get(off_rows, t, "rush_yards"),      ascending=False),
     "ppg":              rank_teams(all_teams, lambda t: get(off_rows, t, "ppg"),             ascending=False),
     "total_tds":        rank_teams(all_teams, lambda t: get(off_rows, t, "pass_tds") + get(off_rows, t, "rush_tds"), ascending=False),
     "first_downs":      rank_teams(all_teams, lambda t: get(off_rows, t, "first_downs"),     ascending=False),
-    # Defense — lower yards/points = better
     "yards_allowed":    rank_teams(all_teams, lambda t: get(def_rows, t, "yards_allowed"),   ascending=True),
     "pass_yds_allowed": rank_teams(all_teams, lambda t: get(def_rows, t, "pass_yards_allowed"), ascending=True),
     "rush_yds_allowed": rank_teams(all_teams, lambda t: get(def_rows, t, "rush_yards_allowed"), ascending=True),
     "pts_allowed":      rank_teams(all_teams, lambda t: get(def_rows, t, "points_allowed"),  ascending=True),
     "def_sacks":        rank_teams(all_teams, lambda t: get(def_rows, t, "sacks"),           ascending=False),
     "def_ints":         rank_teams(all_teams, lambda t: get(def_rows, t, "interceptions"),   ascending=False),
-    # Efficiency — higher = better
     "third_down":       rank_teams(all_teams, lambda t: get(conv_rows, t, "third_down_pct"), ascending=False),
     "fourth_down":      rank_teams(all_teams, lambda t: get(conv_rows, t, "fourth_down_pct"), ascending=False),
     "rz_td_pct":        rank_teams(all_teams, lambda t: get(rz_rows, t, "redzone_td_pct"),  ascending=False),
     "to_diff":          rank_teams(all_teams, lambda t: get(to_rows, t, "differential"),     ascending=False),
-    # Discipline — lower = better
     "penalties":        rank_teams(all_teams, lambda t: get(pen_rows, t, "penalties"),       ascending=True),
     "pen_yards":        rank_teams(all_teams, lambda t: get(pen_rows, t, "penalty_yards"),   ascending=True),
-    # Turnovers given: least given (closest to 0) = best = rank 1
     "to_given":         rank_teams(all_teams, lambda t: get(to_rows, t, "given"),            ascending=False),
 }
 
 
-def build_s7_block(t):
+def build_s8_block(t):
     o  = off_rows.get(t, {})
     d  = def_rows.get(t, {})
     c  = conv_rows.get(t, {})
     rz = rz_rows.get(t, {})
     p  = pen_rows.get(t, {})
     tv = to_rows.get(t, {})
-    total_tds = o.get("pass_tds", 0) + o.get("rush_tds", 0)
 
     return {
         "offense": {
@@ -251,7 +245,7 @@ def build_s7_block(t):
     }
 
 
-def build_s7_rankings(t):
+def build_s8_rankings(t):
     o  = off_rows.get(t, {})
     d  = def_rows.get(t, {})
     c  = conv_rows.get(t, {})
@@ -310,15 +304,15 @@ for team_name in all_teams:
     with open(json_path) as f:
         report = json.load(f)
 
-    # Add S7 season data
-    report.setdefault("season_by_season", {})["7"] = build_s7_block(team_name)
+    # Add S8 season data
+    report.setdefault("season_by_season", {})["8"] = build_s8_block(team_name)
 
-    # Add S7 rankings
-    report.setdefault("rankings", {}).setdefault("by_season", {})["7"] = build_s7_rankings(team_name)
+    # Add S8 rankings
+    report.setdefault("rankings", {}).setdefault("by_season", {})["8"] = build_s8_rankings(team_name)
 
     # Update seasons_analyzed if present
-    if "seasons_analyzed" in report and 7 not in report["seasons_analyzed"]:
-        report["seasons_analyzed"].append(7)
+    if "seasons_analyzed" in report and 8 not in report["seasons_analyzed"]:
+        report["seasons_analyzed"].append(8)
 
     # Update aggregated_stats
     sbs = report["season_by_season"]
@@ -350,7 +344,7 @@ print("\nRebuilding summary files...")
 GAMES = 16
 team_seasons = {}
 
-for s in range(1, 8):
+for s in range(1, 9):
     off_sheet = sheets.get(f"S{s} Offense")
     def_sheet = sheets.get(f"S{s} Defense")
     to_sheet  = sheets.get(f"S{s} Turnovers")
@@ -415,9 +409,8 @@ off_rank = {t: i+1 for i,t in enumerate(overall_off)}
 def_rank = {t: i+1 for i,t in enumerate(overall_def)}
 to_rank  = {t: i+1 for i,t in enumerate(overall_to)}
 
-# ── master_summary.json ───────────────────────────────────────────────────────
 master = {
-    "seasons_analyzed": list(range(1, 8)),
+    "seasons_analyzed": list(range(1, 9)),
     "total_teams": len(summary_teams),
     "overall_rankings": {
         "overall_offense":       overall_off,
@@ -445,14 +438,13 @@ with open(master_path, "w") as f:
     json.dump(master, f, indent=2)
 print(f"  ✓  {master_path}")
 
-# ── TEAM_RANKINGS_SUMMARY.txt ─────────────────────────────────────────────────
 W = 80
 lines = [
     "=" * W,
-    "NFL TEAM STATISTICAL RANKINGS - SEASONS 1-7",
+    "NFL TEAM STATISTICAL RANKINGS - SEASONS 1-8",
     "=" * W,
     "",
-    "Seasons Analyzed: 1, 2, 3, 4, 5, 6, 7",
+    "Seasons Analyzed: 1, 2, 3, 4, 5, 6, 7, 8, 8",
     f"Total Teams: {len(summary_teams)}",
     "",
 ]

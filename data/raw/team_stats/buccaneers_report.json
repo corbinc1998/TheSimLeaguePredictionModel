@@ -7,7 +7,8 @@
     4,
     5,
     6,
-    7
+    7,
+    8
   ],
   "season_by_season": {
     "1": {
@@ -289,18 +290,58 @@
         "penalties": 25,
         "penalty_yards": 239
       }
+    },
+    "8": {
+      "offense": {
+        "total_yards": 6368.0,
+        "pass_yards": 4883.0,
+        "rush_yards": 1485.0,
+        "ppg": 34.2,
+        "pass_tds": 35,
+        "rush_tds": 15,
+        "first_downs": 273
+      },
+      "defense": {
+        "yards_allowed": 5999.0,
+        "pass_yards_allowed": 4759.0,
+        "rush_yards_allowed": 1240.0,
+        "points_allowed": 413.0,
+        "sacks": 16,
+        "interceptions": 43,
+        "fumbles_forced": 4
+      },
+      "efficiency": {
+        "third_down_pct": 44.0,
+        "fourth_down_pct": 66.0,
+        "redzone_att": 62,
+        "redzone_tds": 33,
+        "redzone_td_pct": 0.5323
+      },
+      "turnovers": {
+        "differential": 15,
+        "given": -32,
+        "taken": 47,
+        "int_thrown": -20,
+        "int_caught": 43,
+        "fumbles_lost": -12,
+        "fumbles_recovered": 4
+      },
+      "discipline": {
+        "penalties": 23,
+        "penalty_yards": 225
+      }
     }
   },
   "aggregated_stats": {
-    "seasons_played": 7,
-    "total_offensive_yards": 42832.0,
-    "total_points_scored": 3220.8,
-    "total_points_allowed": 3427.0,
-    "total_turnovers_forced": 248,
-    "total_turnovers_given": 276,
-    "avg_ppg": 28.7571,
-    "avg_points_allowed": 489.5714,
-    "avg_turnover_diff": -4.0,
+    "seasons_played": 8,
+    "total_offensive_yards": 49200.0,
+    "total_points_scored": 3768.0,
+    "total_points_allowed": 3840.0,
+    "total_turnovers_forced": 295,
+    "total_turnovers_given": 308,
+    "avg_ppg": 29.4375,
+    "avg_points_allowed": 480.0,
+    "avg_turnover_diff": -1.625,
     "rankings_by_season": {}
   },
   "rankings": {
@@ -904,6 +945,92 @@
           "turnovers_given": {
             "rank": 11,
             "value": -34
+          }
+        }
+      },
+      "8": {
+        "offense": {
+          "total_yards": {
+            "rank": 7,
+            "value": 6368.0
+          },
+          "pass_yards": {
+            "rank": 8,
+            "value": 4883.0
+          },
+          "rush_yards": {
+            "rank": 15,
+            "value": 1485.0
+          },
+          "ppg": {
+            "rank": 1,
+            "value": 34.2
+          },
+          "total_tds": {
+            "rank": 4,
+            "value": 50
+          },
+          "first_downs": {
+            "rank": 6,
+            "value": 273
+          }
+        },
+        "defense": {
+          "yards_allowed": {
+            "rank": 19,
+            "value": 5999.0
+          },
+          "pass_yards_allowed": {
+            "rank": 23,
+            "value": 4759.0
+          },
+          "rush_yards_allowed": {
+            "rank": 6,
+            "value": 1240.0
+          },
+          "points_allowed": {
+            "rank": 9,
+            "value": 413.0
+          },
+          "sacks": {
+            "rank": 25,
+            "value": 16
+          },
+          "interceptions": {
+            "rank": 4,
+            "value": 43
+          }
+        },
+        "efficiency": {
+          "third_down_pct": {
+            "rank": 4,
+            "value": 44.0
+          },
+          "fourth_down_pct": {
+            "rank": 4,
+            "value": 66.0
+          },
+          "redzone_td_pct": {
+            "rank": 10,
+            "value": 0.5323
+          },
+          "turnover_diff": {
+            "rank": 4,
+            "value": 15
+          }
+        },
+        "discipline": {
+          "penalties": {
+            "rank": 22,
+            "value": 23
+          },
+          "penalty_yards": {
+            "rank": 29,
+            "value": 225
+          },
+          "turnovers_given": {
+            "rank": 6,
+            "value": -32
           }
         }
       }
