@@ -74,6 +74,12 @@ def run(trigger, season_id, current_week):
         "AFC": ["sd", "pit", "buf", "jax", "bal", "kc"],
         "NFC": ["phi", "car", "chi", "sf", "tb", "atl"]
         }
+    # Override with actual S9 playoff seeds
+    if season_id == 9 and current_week >= 18:
+        seeds = {
+            "AFC": ["den", "pit", "mia", "hou", "bal", "cin"],
+            "NFC": ["chi", "was", "car", "sf", "nyg", "dal"]
+        }
     # Step 5 — Simulate bracket
     print("Simulating playoff bracket...")
     bracket = simulate_bracket(seeds, games, team_stats_map, season_id=season_id, elo_ratings=elo_ratings)
