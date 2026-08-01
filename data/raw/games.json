@@ -27597,8 +27597,6 @@
           "homeTeamSeed": "3",
           "awayTeamId": "cin",
           "awayTeamSeed": "6",
-          "homeScore": null,
-          "awayScore": null,
           "date": "2026-08-01T00:00:00.000Z",
           "broadcast": "",
           "status": "scheduled",
@@ -27606,7 +27604,7 @@
           "id": "playoff_1785556855745",
           "week": 18,
           "seasonId": "9",
-          "completed": true
+          "completed": false
         },
         {
           "round": "wildcard",
@@ -27616,8 +27614,6 @@
           "homeTeamSeed": "3",
           "awayTeamId": "dal",
           "awayTeamSeed": "6",
-          "homeScore": null,
-          "awayScore": null,
           "date": "2026-08-01T00:00:00.000Z",
           "broadcast": "",
           "status": "scheduled",
@@ -27625,7 +27621,7 @@
           "id": "playoff_1785556884345",
           "week": 18,
           "seasonId": "9",
-          "completed": true
+          "completed": false
         },
         {
           "round": "wildcard",
@@ -27635,8 +27631,6 @@
           "homeTeamSeed": "4",
           "awayTeamId": "bal",
           "awayTeamSeed": "5",
-          "homeScore": null,
-          "awayScore": null,
           "date": "2026-08-01T00:00:00.000Z",
           "broadcast": "",
           "status": "scheduled",
@@ -27644,7 +27638,7 @@
           "id": "playoff_1785556901604",
           "week": 18,
           "seasonId": "9",
-          "completed": true
+          "completed": false
         },
         {
           "round": "wildcard",
@@ -27654,8 +27648,6 @@
           "homeTeamSeed": "4",
           "awayTeamId": "nyg",
           "awayTeamSeed": "5",
-          "homeScore": null,
-          "awayScore": null,
           "date": "2026-08-01T00:00:00.000Z",
           "broadcast": "",
           "status": "scheduled",
@@ -27663,7 +27655,7 @@
           "id": "playoff_1785556921392",
           "week": 18,
           "seasonId": "9",
-          "completed": true
+          "completed": false
         }
       ],
       "name": "9"
