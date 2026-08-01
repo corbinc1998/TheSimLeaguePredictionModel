@@ -11,16 +11,21 @@ from src.simulation.standings import build_standings, get_playoff_seeds
 import config
 
 
-def get_actual_result(home_id, away_id, week, games):
+def get_actual_result(home_id, away_id, week, games, season_id=None):
     """
-    Return actual winner if a completed playoff game exists for these teams.
-    Matches on team pair regardless of home/away order, and accepts week=None
-    to search across all playoff weeks (used as fallback).
+    Return actual winner if a completed playoff game exists for these teams
+    in the current season only. Filters by season_id to avoid matching
+    games from previous seasons.
     """
     teams = {home_id, away_id}
     for g in games:
         if not g.get("isPlayoff") or not g.get("completed"):
             continue
+        # Only match current season
+        if season_id is not None:
+            g_season = g.get("season") or g.get("seasonId") or g.get("season_id")
+            if str(g_season) != str(season_id):
+                continue
         if week is not None and g.get("week") != week:
             continue
         if {g.get("homeTeamId"), g.get("awayTeamId")} != teams:
@@ -55,15 +60,14 @@ def get_actual_result(home_id, away_id, week, games):
 def simulate_game(home_id, away_id, games, team_stats_map, season_id, elo_ratings, week=None):
     """
     Simulate or return the actual result of a playoff game.
-    Tries exact week match first, then falls back to any completed
-    playoff game between these two teams (handles week numbering mismatches).
+    Only matches completed games from the current season.
     """
     if week is not None:
-        actual = get_actual_result(home_id, away_id, week, games)
+        actual = get_actual_result(home_id, away_id, week, games, season_id)
         if actual:
             return actual
-        # Fallback: search all playoff weeks in case week number is off
-        actual = get_actual_result(home_id, away_id, None, games)
+        # Fallback: search all playoff weeks in current season
+        actual = get_actual_result(home_id, away_id, None, games, season_id)
         if actual:
             return actual
 
