@@ -27749,16 +27749,14 @@
           "homeTeamSeed": "1",
           "awayTeamId": "mia",
           "awayTeamSeed": "3",
-          "homeScore": 27,
-          "awayScore": 23,
           "date": "2026-08-01T00:00:00.000Z",
           "broadcast": "",
-          "status": "final",
+          "status": "scheduled",
           "isPlayoff": true,
           "id": "playoff_1785602118250",
           "week": 20,
           "seasonId": "9",
-          "completed": true
+          "completed": false
         },
         {
           "round": "conference",
@@ -27768,31 +27766,12 @@
           "homeTeamSeed": "2",
           "awayTeamId": "dal",
           "awayTeamSeed": "6",
-          "homeScore": 41,
-          "awayScore": 48,
           "date": "2026-08-01T00:00:00.000Z",
-          "broadcast": "",
-          "status": "final",
-          "isPlayoff": true,
-          "id": "playoff_1785602132843",
-          "week": 20,
-          "seasonId": "9",
-          "completed": true
-        },
-        {
-          "round": "superbowl",
-          "conference": "AFC",
-          "matchup": 1,
-          "homeTeamId": "den",
-          "homeTeamSeed": "1",
-          "awayTeamId": "dal",
-          "awayTeamSeed": "6",
-          "date": "2026-08-03T00:00:00.000Z",
           "broadcast": "",
           "status": "scheduled",
           "isPlayoff": true,
-          "id": "playoff_1785759674734",
-          "week": 21,
+          "id": "playoff_1785602132843",
+          "week": 20,
           "seasonId": "9",
           "completed": false
         }
@@ -27800,5 +27779,5 @@
       "name": "9"
     }
   },
-  "exportDate": "2026-08-03T12:21:28.366Z"
+  "exportDate": "2026-08-01T16:35:52.918Z"
 }
