@@ -27787,20 +27787,18 @@
           "homeTeamSeed": "1",
           "awayTeamId": "dal",
           "awayTeamSeed": "6",
-          "homeScore": 17,
-          "awayScore": 21,
           "date": "2026-08-03T00:00:00.000Z",
           "broadcast": "",
-          "status": "final",
+          "status": "scheduled",
           "isPlayoff": true,
           "id": "playoff_1785759674734",
           "week": 21,
           "seasonId": "9",
-          "completed": true
+          "completed": false
         }
       ],
       "name": "9"
     }
   },
-  "exportDate": "2026-08-03T12:23:51.078Z"
+  "exportDate": "2026-08-03T12:21:28.366Z"
 }
