@@ -27597,8 +27597,6 @@
           "homeTeamSeed": "3",
           "awayTeamId": "cin",
           "awayTeamSeed": "6",
-          "homeScore": 44,
-          "awayScore": 3,
           "date": "2026-08-01T00:00:00.000Z",
           "broadcast": "",
           "status": "final",
@@ -27606,7 +27604,9 @@
           "id": "playoff_1785556855745",
           "week": 18,
           "seasonId": "9",
-          "completed": true
+          "completed": true,
+          "homeScore": 44,
+          "awayScore": 3
         },
         {
           "round": "wildcard",
@@ -27616,8 +27616,6 @@
           "homeTeamSeed": "3",
           "awayTeamId": "dal",
           "awayTeamSeed": "6",
-          "homeScore": 21,
-          "awayScore": 51,
           "date": "2026-08-01T00:00:00.000Z",
           "broadcast": "",
           "status": "final",
@@ -27625,7 +27623,9 @@
           "id": "playoff_1785556884345",
           "week": 18,
           "seasonId": "9",
-          "completed": true
+          "completed": true,
+          "homeScore": 21,
+          "awayScore": 51
         },
         {
           "round": "wildcard",
@@ -27635,8 +27635,6 @@
           "homeTeamSeed": "4",
           "awayTeamId": "bal",
           "awayTeamSeed": "5",
-          "homeScore": 34,
-          "awayScore": 13,
           "date": "2026-08-01T00:00:00.000Z",
           "broadcast": "",
           "status": "final",
@@ -27644,7 +27642,9 @@
           "id": "playoff_1785556901604",
           "week": 18,
           "seasonId": "9",
-          "completed": true
+          "completed": true,
+          "homeScore": 34,
+          "awayScore": 13
         },
         {
           "round": "wildcard",
@@ -27654,8 +27654,6 @@
           "homeTeamSeed": "4",
           "awayTeamId": "nyg",
           "awayTeamSeed": "5",
-          "homeScore": 34,
-          "awayScore": 12,
           "date": "2026-08-01T00:00:00.000Z",
           "broadcast": "",
           "status": "final",
@@ -27663,7 +27661,9 @@
           "id": "playoff_1785556921392",
           "week": 18,
           "seasonId": "9",
-          "completed": true
+          "completed": true,
+          "homeScore": 34,
+          "awayScore": 12
         },
         {
           "round": "divisional",
@@ -27673,35 +27673,14 @@
           "homeTeamSeed": "1",
           "awayTeamId": "hou",
           "awayTeamSeed": "4",
-          "homeScore": 26,
-          "awayScore": 20,
           "date": "2026-08-01T00:00:00.000Z",
           "broadcast": "",
-          "status": "final",
+          "status": "scheduled",
           "isPlayoff": true,
-          "id": "playoff_1785587116182",
+          "id": "playoff_div_afc1",
           "week": 19,
           "seasonId": "9",
-          "completed": true
-        },
-        {
-          "round": "divisional",
-          "conference": "NFC",
-          "matchup": 1,
-          "homeTeamId": "chi",
-          "homeTeamSeed": "1",
-          "awayTeamId": "dal",
-          "awayTeamSeed": "6",
-          "homeScore": 24,
-          "awayScore": 35,
-          "date": "2026-08-01T00:00:00.000Z",
-          "broadcast": "",
-          "status": "final",
-          "isPlayoff": true,
-          "id": "playoff_1785587140338",
-          "week": 19,
-          "seasonId": "9",
-          "completed": true
+          "completed": false
         },
         {
           "round": "divisional",
@@ -27711,16 +27690,31 @@
           "homeTeamSeed": "2",
           "awayTeamId": "mia",
           "awayTeamSeed": "3",
-          "homeScore": 24,
-          "awayScore": 30,
           "date": "2026-08-01T00:00:00.000Z",
           "broadcast": "",
-          "status": "final",
+          "status": "scheduled",
           "isPlayoff": true,
-          "id": "playoff_1785587160149",
+          "id": "playoff_div_afc2",
           "week": 19,
           "seasonId": "9",
-          "completed": true
+          "completed": false
+        },
+        {
+          "round": "divisional",
+          "conference": "NFC",
+          "matchup": 1,
+          "homeTeamId": "chi",
+          "homeTeamSeed": "1",
+          "awayTeamId": "dal",
+          "awayTeamSeed": "6",
+          "date": "2026-08-01T00:00:00.000Z",
+          "broadcast": "",
+          "status": "scheduled",
+          "isPlayoff": true,
+          "id": "playoff_div_nfc1",
+          "week": 19,
+          "seasonId": "9",
+          "completed": false
         },
         {
           "round": "divisional",
@@ -27730,48 +27724,12 @@
           "homeTeamSeed": "2",
           "awayTeamId": "sf",
           "awayTeamSeed": "4",
-          "homeScore": 29,
-          "awayScore": 28,
           "date": "2026-08-01T00:00:00.000Z",
           "broadcast": "",
-          "status": "final",
+          "status": "scheduled",
           "isPlayoff": true,
-          "id": "playoff_1785587182962",
+          "id": "playoff_div_nfc2",
           "week": 19,
-          "seasonId": "9",
-          "completed": true
-        },
-        {
-          "round": "conference",
-          "conference": "AFC",
-          "matchup": 1,
-          "homeTeamId": "den",
-          "homeTeamSeed": "1",
-          "awayTeamId": "mia",
-          "awayTeamSeed": "3",
-          "date": "2026-08-01T00:00:00.000Z",
-          "broadcast": "",
-          "status": "scheduled",
-          "isPlayoff": true,
-          "id": "playoff_1785602118250",
-          "week": 20,
-          "seasonId": "9",
-          "completed": false
-        },
-        {
-          "round": "conference",
-          "conference": "NFC",
-          "matchup": 1,
-          "homeTeamId": "was",
-          "homeTeamSeed": "2",
-          "awayTeamId": "dal",
-          "awayTeamSeed": "6",
-          "date": "2026-08-01T00:00:00.000Z",
-          "broadcast": "",
-          "status": "scheduled",
-          "isPlayoff": true,
-          "id": "playoff_1785602132843",
-          "week": 20,
           "seasonId": "9",
           "completed": false
         }
@@ -27779,5 +27737,5 @@
       "name": "9"
     }
   },
-  "exportDate": "2026-08-01T16:35:52.918Z"
+  "exportDate": "2026-08-01T04:02:11.642Z"
 }
