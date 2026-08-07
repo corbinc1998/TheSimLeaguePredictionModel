@@ -151,3 +151,4 @@ TheSimLeaguePredictionModel/
 | 6 | 14-15 | Baltimore Ravens | Tampa Bay Buccaneers | 17–16 | Adrian Peterson (Cowboys) | 2,001 Rush Yds · 18 TD · 50 Rec · 619 Rec Yds · 4 TD |
 | 7 | 15-16 | Chicago Bears | Baltimore Ravens | 38–35 | Mark Sanchez (Saints) | 5,566 Yds · 41 TD · 17 INT · 110.9 QBR |
 | 8 | 16-17 | Baltimore Ravens | San Francisco 49ers | 23-20 | Mark Sanchez (Saints) | 5,436 Yards 37 TD 22 INT 102.2 |
+| 9 | 17-18 | Dallas Cowboys | Denver Broncos | 21-17 | Daniel Rocker (Cardinals) | TBD |
