@@ -2,7 +2,7 @@
 
 This repository contains a **Madden 10 Fantasy Draft Simulation** — a project that records every CPU vs. CPU game in a Madden 10 fantasy draft league. All game results are tracked and stored, and the project has evolved to include an **AI-powered prediction engine** that uses historical results, team stats, and performance trends to forecast future outcomes.
 
-We are currently in **Season 8**, with the model re-predicting after every week's results come in and logging exactly what changed.
+We are currently just finished with **Season 9**, with the model re-predicting after every week's results come in and logging exactly what changed.
 
 All games are streamed live and uploaded to YouTube, and results are updated in real time on the web app.
 
