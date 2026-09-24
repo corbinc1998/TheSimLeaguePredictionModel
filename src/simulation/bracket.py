@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
-from src.data.loader import load_games, load_team_stats
+from src.data.loader import load_games
 from src.features.elo import compute_elo_ratings
 from src.features.ratings import build_matchup_features
 from src.model.predict import predict_game, predict_score
@@ -57,10 +57,11 @@ def get_actual_result(home_id, away_id, week, games, season_id=None):
     return None
 
 
-def simulate_game(home_id, away_id, games, team_stats_map, season_id, elo_ratings, week=None):
+def simulate_game(home_id, away_id, games, team_stats_map, season_id, elo_ratings, week=None, neutral=False):
     """
     Simulate or return the actual result of a playoff game.
     Only matches completed games from the current season.
+    neutral=True drops every home-field term (Super Bowl).
     """
     if week is not None:
         actual = get_actual_result(home_id, away_id, week, games, season_id)
@@ -74,10 +75,10 @@ def simulate_game(home_id, away_id, games, team_stats_map, season_id, elo_rating
     features = build_matchup_features(
         home_id, away_id, games, team_stats_map,
         as_of_week=18, season_id=season_id,
-        elo_ratings=elo_ratings, is_playoff=True
+        elo_ratings=elo_ratings, is_playoff=True, is_neutral=neutral
     )
     prediction = predict_game(features)
-    score = predict_score(features["home_rating"], features["away_rating"])
+    score = predict_score(features)
     return {
         "home_id":              home_id,
         "away_id":              away_id,
@@ -191,10 +192,11 @@ def simulate_bracket(seeds, games, team_stats_map, season_id, elo_ratings):
     if "AFC" in bracket and "NFC" in bracket:
         afc_champ = bracket["AFC"]["champion"]
         nfc_champ = bracket["NFC"]["champion"]
-        # Super Bowl is neutral site — AFC champ listed as home by convention
+        # Super Bowl is neutral site — AFC champ listed as home by convention,
+        # with no home-field advantage applied
         sb = simulate_game(
             afc_champ, nfc_champ,
-            flat_games, team_stats_map, season_id, elo_ratings, week=21
+            flat_games, team_stats_map, season_id, elo_ratings, week=21, neutral=True
         )
         bracket["superbowl"] = sb
         bracket["champion"]  = sb["winner"]

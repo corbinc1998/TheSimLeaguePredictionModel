@@ -3,34 +3,33 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__)))
 
 import argparse
-from src.data.loader import load_games, load_team_stats
+from src.data.loader import load_games, load_team_stats_map
 from src.features.elo import compute_elo_ratings
 from src.features.ratings import build_team_rating
 from src.simulation.season import predict_season
 from src.simulation.standings import build_standings, get_playoff_seeds
 from src.simulation.bracket import simulate_bracket
+from src.simulation.monte_carlo import simulate_season, print_projections
 from src.tracking.logger import create_run, save_run, get_latest_run
 from src.tracking.diff import diff_runs
 import config
 
 
-def print_power_rankings(team_ratings_snapshot, elo_ratings, standings):
+def print_power_rankings(team_ratings_snapshot, elo_ratings, projections):
     teams = []
     for tid in config.TEAM_IDS:
         rating = team_ratings_snapshot.get(tid) or 0
         elo = round(elo_ratings.get(tid, 0), 1)
-        w = standings[tid]["w"]
-        l = standings[tid]["l"]
-        t = standings[tid]["t"]
-        teams.append({"team_id": tid, "rating": rating, "elo": elo, "w": w, "l": l, "t": t})
+        teams.append({"team_id": tid, "rating": rating, "elo": elo,
+                      "expected_wins": projections[tid]["expected_wins"]})
 
     # Sort by rating then elo as tiebreaker
     teams.sort(key=lambda x: (-x["rating"], -x["elo"]))
 
     print("\n=== POWER RANKINGS ===")
     for i, t in enumerate(teams):
-        record = f"{t['w']}-{t['l']}-{t['t']}" if t['t'] > 0 else f"{t['w']}-{t['l']}"
-        print(f"  {i+1:>2}. {config.ABBR[t['team_id']]:<5} Rating: {t['rating']:<6} Elo: {t['elo']:<8} Projected: {record}")
+        print(f"  {i+1:>2}. {config.ABBR[t['team_id']]:<5} Rating: {t['rating']:<6} Elo: {t['elo']:<8} "
+              f"Expected wins: {t['expected_wins']}")
 
 def run(trigger, season_id, current_week):
     print(f"\n{'='*50}")
@@ -41,19 +40,14 @@ def run(trigger, season_id, current_week):
     # Step 1 — Load data
     print("Loading games and team stats...")
     games = load_games()
-    team_stats_map = {}
-    for tid in config.TEAM_IDS:
-        try:
-            team_stats_map[tid] = load_team_stats(tid)
-        except:
-            team_stats_map[tid] = None
+    team_stats_map = load_team_stats_map()
     loaded = sum(1 for v in team_stats_map.values() if v is not None)
     print(f"  {len(games)} games loaded across all seasons")
     print(f"  {loaded}/32 team stat files loaded")
 
     # Step 2 — Compute Elo
     print("\nComputing Elo ratings...")
-    elo_ratings, elo_history = compute_elo_ratings(games)
+    elo_ratings, elo_history = compute_elo_ratings(games, as_of_season=season_id)
     top3 = sorted(elo_ratings.items(), key=lambda x: -x[1])[:3]
     print(f"  Top 3: {', '.join(f'{config.ABBR[t]} ({round(r,1)})' for t,r in top3)}")
 
@@ -65,6 +59,8 @@ def run(trigger, season_id, current_week):
     print(f"  {completed} completed games, {predicted} predicted games")
 
     # Step 4 — Build standings
+    # These are "favorite wins every game" standings, kept for the run diff.
+    # The realistic projection is the Monte Carlo step below.
     print("\nBuilding standings...")
     standings = build_standings(results)
     seeds = get_playoff_seeds(standings, games)
@@ -80,6 +76,16 @@ def run(trigger, season_id, current_week):
             "AFC": ["den", "pit", "mia", "hou", "bal", "cin"],
             "NFC": ["chi", "was", "car", "sf", "nyg", "dal"]
         }
+    # Add the actual S10 seeds here once the regular season ends
+    actual_seeds = seeds if current_week >= 18 else None
+
+    # Step 4b — Monte Carlo projections
+    print(f"Simulating the rest of the season {config.MONTE_CARLO_SIMS:,} times...")
+    projections = simulate_season(
+        results, games, team_stats_map, season_id, elo_ratings,
+        seeds_override=actual_seeds,
+    )
+    print_projections(projections)
     # Step 5 — Simulate bracket
     print("Simulating playoff bracket...")
     bracket = simulate_bracket(seeds, games, team_stats_map, season_id=season_id, elo_ratings=elo_ratings)
@@ -90,15 +96,12 @@ def run(trigger, season_id, current_week):
     print("\nBuilding team ratings snapshot...")
     team_ratings_snapshot = {}
     for tid in config.TEAM_IDS:
-        try:
-            team_ratings_snapshot[tid] = round(build_team_rating(
-                tid, games, team_stats_map.get(tid),
-                as_of_week=current_week,
-                season_id=season_id,
-                elo_ratings=elo_ratings
-            ), 2)
-        except:
-            team_ratings_snapshot[tid] = None
+        team_ratings_snapshot[tid] = round(build_team_rating(
+            tid, games, team_stats_map.get(tid),
+            as_of_week=current_week,
+            season_id=season_id,
+            elo_ratings=elo_ratings
+        ), 2)
 
     
     power_rankings = []
@@ -114,6 +117,9 @@ def run(trigger, season_id, current_week):
             "elo": round(elo_ratings.get(tid, 0), 1),
             "projected_w": standings[tid]["w"],
             "projected_l": standings[tid]["l"],
+            "expected_w": projections[tid]["expected_wins"],
+            "playoff_pct": projections[tid]["playoff_pct"],
+            "sb_win_pct": projections[tid]["sb_win_pct"],
         })
 
     # Step 7 — Diff against previous run
@@ -128,14 +134,15 @@ def run(trigger, season_id, current_week):
         bracket=bracket,
         elo_ratings={k: round(v, 1) for k, v in elo_ratings.items()},
         team_ratings=team_ratings_snapshot,
-        power_rankings=power_rankings
+        power_rankings=power_rankings,
+        projections=projections
     )
 
     sorted_ratings = sorted(team_ratings_snapshot.items(), key=lambda x: -x[1] if x[1] else 0)
     print("\n  Top 5:   " + " | ".join(f"{config.ABBR[t]} {r}" for t, r in sorted_ratings[:5]))
     print("  Bottom 5: " + " | ".join(f"{config.ABBR[t]} {r}" for t, r in sorted_ratings[-5:]))
 
-    print_power_rankings(team_ratings_snapshot, elo_ratings, standings)
+    print_power_rankings(team_ratings_snapshot, elo_ratings, projections)
 
     if previous_run:
         print("\nDiffing against previous run...")

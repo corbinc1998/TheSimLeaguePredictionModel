@@ -104,10 +104,14 @@ def get_rolling_stats(team_id, games, as_of_week, season_id, window=None):
 # Used as a fallback when rolling window doesn't have enough games yet
 # Same stats as above but over the full season
 
-def get_season_stats(team_id, games, season_id):
+def get_season_stats(team_id, games, season_id, before_week=None):
+    # before_week: only count regular-season games played before this week.
+    # None keeps the original behaviour (every completed game in the season).
     filtered = []
     for game in games:
         if not game.get("completed", False):
+            continue
+        if before_week is not None and (game.get("isPlayoff") or game["week"] >= before_week):
             continue
         if game["season"] == season_id:
             if game["homeTeamId"] == team_id or game["awayTeamId"] == team_id:

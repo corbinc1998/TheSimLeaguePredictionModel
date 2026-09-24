@@ -2,9 +2,8 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
-from src.data.loader import load_games, load_team_stats
+from src.data.loader import load_games, load_team_stats_map
 from src.features.elo import compute_elo_ratings
-from src.simulation.season import predict_season
 import config
 
 
@@ -18,8 +17,13 @@ def build_standings(results):
         if h not in standings or a not in standings:
             continue
 
-        hs = game.get("predicted_home_score") or game.get("homeScore")
-        as_ = game.get("predicted_away_score") or game.get("awayScore")
+        # Explicit None checks: a projected score of 0 must not fall through
+        hs = game.get("predicted_home_score")
+        if hs is None:
+            hs = game.get("homeScore")
+        as_ = game.get("predicted_away_score")
+        if as_ is None:
+            as_ = game.get("awayScore")
 
         if hs is None or as_ is None:
             continue
@@ -94,22 +98,21 @@ def get_playoff_seeds(standings, games):
 
 
 if __name__ == "__main__":
+    # Deterministic "favorite always wins" standings. For realistic
+    # projections use src/simulation/monte_carlo.py (see pipeline.py).
+    from src.simulation.season import predict_season
+
     games = load_games()
-    elo_ratings, elo_history = compute_elo_ratings(games)
+    season_id = max(g["season"] for g in games)
+    elo_ratings, elo_history = compute_elo_ratings(games, as_of_season=season_id)
+    team_stats_map = load_team_stats_map()
 
-    team_stats_map = {}
-    for tid in config.TEAM_IDS:
-        try:
-            team_stats_map[tid] = load_team_stats(tid)
-        except:
-            team_stats_map[tid] = None
-
-    results = predict_season(games, team_stats_map, season_id=8, current_week=1, elo_ratings=elo_ratings)
+    results = predict_season(games, team_stats_map, season_id=season_id, current_week=1, elo_ratings=elo_ratings)
     standings = build_standings(results)
     division_standings = build_division_standings(standings)
     seeds = get_playoff_seeds(standings, games)
 
-    print("\n=== PROJECTED S8 STANDINGS ===")
+    print(f"\n=== PROJECTED S{season_id} STANDINGS (favorite wins every game) ===")
     for conf in config.CONFERENCES:
         print(f"\n{conf}")
         for div in config.DIVISIONS:
@@ -122,4 +125,4 @@ if __name__ == "__main__":
     for conf in config.CONFERENCES:
         print(f"\n{conf}")
         for i, tid in enumerate(seeds[conf]):
-            print(f"  {i+1}. {config.ABBR[tid]} — {standings[tid]['w']}-{standings[tid]['l']}-{standings[tid]['t']}")
+            print(f"  {i+1}. {config.ABBR[tid]} - {standings[tid]['w']}-{standings[tid]['l']}-{standings[tid]['t']}")
