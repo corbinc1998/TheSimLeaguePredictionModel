@@ -1,25 +1,37 @@
 """
 update_stats.py
 ------------------
-Reads Season 8 data from the Sim Stats xlsx and updates each team's
-JSON report in the team_stats folder.
+Reads one season's sheets from Sim_Stats.xlsx and adds that season to each
+team's JSON report in this folder, then rebuilds master_summary.json and
+TEAM_RANKINGS_SUMMARY.txt.
 
-Usage:
-    python update_stats.py
+The workbook needs these six sheets for the season, laid out exactly like
+the existing ones (same column order):
+    S{n} Offense, S{n} Defense, S{n} Conversions,
+    S{n} RedZone, S{n} Penalties, S{n} Turnovers
 
-Edit the two paths at the top of this file before running.
+Usage (from anywhere):
+    python data/raw/team_stats/update_stats.py --season 9
+
+Re-running for the same season overwrites that season's entry, so it is
+safe to run again after fixing a typo in the workbook.
 """
 
+import argparse
 import json
 import os
+import sys
+
 import pandas as pd
 
-# ─── CONFIGURE THESE TWO PATHS ───────────────────────────────────────────────
-XLSX_PATH = "/Users/corbin/Developer/TheSimLeaguePredictionModel/data/raw/team_stats/Sim_Stats.xlsx"
-TEAM_STATS_DIR = "/Users/corbin/Developer/TheSimLeaguePredictionModel/data/raw/team_stats"
-# ─────────────────────────────────────────────────────────────────────────────
+# Paths are relative to this file, so the script works on any machine
+TEAM_STATS_DIR = os.path.dirname(os.path.abspath(__file__))
+XLSX_PATH = os.path.join(TEAM_STATS_DIR, "Sim_Stats.xlsx")
 
-# Maps uppercase team name → JSON filename stem (without _report.json)
+GAMES_PER_SEASON = 16
+SHEET_KINDS = ["Offense", "Defense", "Conversions", "RedZone", "Penalties", "Turnovers"]
+
+# Maps uppercase team name -> JSON filename stem (without _report.json)
 TEAM_FILE_MAP = {
     "49ERS":       "49ers",
     "BEARS":       "bears",
@@ -32,7 +44,7 @@ TEAM_FILE_MAP = {
     "CHARGERS":    "chargers",
     "CHIEFS":      "chiefs",
     "COLTS":       "colts",
-    "COMMANDERS":  "commanders",   
+    "COMMANDERS":  "commanders",
     "COWBOYS":     "cowboys",
     "DOLPHINS":    "dolphins",
     "EAGLES":      "eagles",
@@ -62,17 +74,21 @@ def norm(name):
     return str(name).upper().strip()
 
 
+def is_team_row(t):
+    return bool(t) and t not in ("TEAM", "NAN", "NONE")
+
+
 def safe_int(v):
     try:
         return int(float(v))
-    except:
+    except (TypeError, ValueError):
         return 0
 
 
 def safe_float(v):
     try:
         return float(v)
-    except:
+    except (TypeError, ValueError):
         return 0.0
 
 
@@ -87,120 +103,119 @@ def get(d, team, key, default=0):
     return d.get(team, {}).get(key, default)
 
 
-# ─── Load xlsx ────────────────────────────────────────────────────────────────
-print(f"Reading {XLSX_PATH}...")
-sheets = pd.read_excel(XLSX_PATH, sheet_name=None, header=0)
+# ─── Parse one season ─────────────────────────────────────────────────────────
 
-# ─── Parse S8 sheets ──────────────────────────────────────────────────────────
-off_rows, def_rows, conv_rows, rz_rows, pen_rows, to_rows = {}, {}, {}, {}, {}, {}
+def parse_season(sheets, season):
+    missing = [f"S{season} {kind}" for kind in SHEET_KINDS if f"S{season} {kind}" not in sheets]
+    if missing:
+        print(f"Missing sheets in {os.path.basename(XLSX_PATH)}: {', '.join(missing)}")
+        print("Add them with the same column layout as the previous season, then re-run.")
+        sys.exit(1)
 
-for _, r in sheets["S8 Offense"].iterrows():
-    t = norm(r.iloc[0])
-    if not t or t in ("TEAM", "NAN", "NONE"):
-        continue
-    off_rows[t] = dict(
-        total_yards=safe_float(r.iloc[2]),
-        pass_yards=safe_float(r.iloc[3]),
-        rush_yards=safe_float(r.iloc[4]),
-        ppg=safe_float(r.iloc[5]),
-        pass_tds=safe_int(r.iloc[6]),
-        rush_tds=safe_int(r.iloc[7]),
-        first_downs=safe_int(r.iloc[9]),
-    )
+    off_rows, def_rows, conv_rows, rz_rows, pen_rows, to_rows = {}, {}, {}, {}, {}, {}
 
-for _, r in sheets["S8 Defense"].iterrows():
-    t = norm(r.iloc[0])
-    if not t or t in ("TEAM", "NAN", "NONE"):
-        continue
-    def_rows[t] = dict(
-        yards_allowed=safe_float(r.iloc[1]),
-        pass_yards_allowed=safe_float(r.iloc[2]),
-        rush_yards_allowed=safe_float(r.iloc[3]),
-        points_allowed=safe_float(r.iloc[4]),
-        sacks=safe_int(r.iloc[5]),
-        fumbles_forced=safe_int(r.iloc[6]),
-        interceptions=safe_int(r.iloc[7]),
-    )
+    for _, r in sheets[f"S{season} Offense"].iterrows():
+        t = norm(r.iloc[0])
+        if not is_team_row(t):
+            continue
+        off_rows[t] = dict(
+            total_yards=safe_float(r.iloc[2]),
+            pass_yards=safe_float(r.iloc[3]),
+            rush_yards=safe_float(r.iloc[4]),
+            ppg=safe_float(r.iloc[5]),
+            pass_tds=safe_int(r.iloc[6]),
+            rush_tds=safe_int(r.iloc[7]),
+            first_downs=safe_int(r.iloc[9]),
+        )
 
-for _, r in sheets["S8 Conversions"].iterrows():
-    t = norm(r.iloc[0])
-    if not t or t in ("TEAM", "NAN", "NONE"):
-        continue
-    conv_rows[t] = dict(
-        third_down_pct=safe_float(r.iloc[3]),
-        fourth_down_pct=safe_float(r.iloc[6]),
-    )
+    for _, r in sheets[f"S{season} Defense"].iterrows():
+        t = norm(r.iloc[0])
+        if not is_team_row(t):
+            continue
+        def_rows[t] = dict(
+            yards_allowed=safe_float(r.iloc[1]),
+            pass_yards_allowed=safe_float(r.iloc[2]),
+            rush_yards_allowed=safe_float(r.iloc[3]),
+            points_allowed=safe_float(r.iloc[4]),
+            sacks=safe_int(r.iloc[5]),
+            fumbles_forced=safe_int(r.iloc[6]),
+            interceptions=safe_int(r.iloc[7]),
+        )
 
-for _, r in sheets["S8 RedZone"].iterrows():
-    t = norm(r.iloc[0])
-    if not t or t in ("TEAM", "NAN", "NONE"):
-        continue
-    att = safe_float(r.iloc[1])
-    td  = safe_float(r.iloc[2])
-    rz_rows[t] = dict(
-        redzone_att=int(att),
-        redzone_tds=int(td),
-        redzone_td_pct=round(td / att, 4) if att else 0,
-    )
+    for _, r in sheets[f"S{season} Conversions"].iterrows():
+        t = norm(r.iloc[0])
+        if not is_team_row(t):
+            continue
+        conv_rows[t] = dict(
+            third_down_pct=safe_float(r.iloc[3]),
+            fourth_down_pct=safe_float(r.iloc[6]),
+        )
 
-for _, r in sheets["S8 Penalties"].iterrows():
-    t = norm(r.iloc[0])
-    if not t or t in ("TEAM", "NAN", "NONE"):
-        continue
-    pen_rows[t] = dict(
-        penalties=safe_int(r.iloc[1]),
-        penalty_yards=safe_int(r.iloc[2]),
-    )
+    for _, r in sheets[f"S{season} RedZone"].iterrows():
+        t = norm(r.iloc[0])
+        if not is_team_row(t):
+            continue
+        att = safe_float(r.iloc[1])
+        td = safe_float(r.iloc[2])
+        rz_rows[t] = dict(
+            redzone_att=int(att),
+            redzone_tds=int(td),
+            redzone_td_pct=round(td / att, 4) if att else 0,
+        )
 
-for _, r in sheets["S8 Turnovers"].iterrows():
-    t = norm(r.iloc[0])
-    if not t or t in ("TEAM", "NAN", "NONE"):
-        continue
-    to_rows[t] = dict(
-        differential=safe_int(r.iloc[1]),
-        given=safe_int(r.iloc[2]),
-        taken=safe_int(r.iloc[5]),
-        int_thrown=safe_int(r.iloc[3]),
-        int_caught=safe_int(r.iloc[6]),
-        fumbles_lost=safe_int(r.iloc[4]),
-        fumbles_recovered=safe_int(r.iloc[7]),
-    )
+    for _, r in sheets[f"S{season} Penalties"].iterrows():
+        t = norm(r.iloc[0])
+        if not is_team_row(t):
+            continue
+        pen_rows[t] = dict(
+            penalties=safe_int(r.iloc[1]),
+            penalty_yards=safe_int(r.iloc[2]),
+        )
 
-all_teams = sorted(
-    set(off_rows) | set(def_rows) | set(conv_rows) | set(rz_rows) | set(pen_rows) | set(to_rows)
-)
-print(f"Found {len(all_teams)} teams in S8 data")
+    for _, r in sheets[f"S{season} Turnovers"].iterrows():
+        t = norm(r.iloc[0])
+        if not is_team_row(t):
+            continue
+        to_rows[t] = dict(
+            differential=safe_int(r.iloc[1]),
+            given=safe_int(r.iloc[2]),
+            taken=safe_int(r.iloc[5]),
+            int_thrown=safe_int(r.iloc[3]),
+            int_caught=safe_int(r.iloc[6]),
+            fumbles_lost=safe_int(r.iloc[4]),
+            fumbles_recovered=safe_int(r.iloc[7]),
+        )
 
-# ─── Compute rankings ─────────────────────────────────────────────────────────
-ranks = {
-    "total_yards":      rank_teams(all_teams, lambda t: get(off_rows, t, "total_yards"),    ascending=False),
-    "pass_yards":       rank_teams(all_teams, lambda t: get(off_rows, t, "pass_yards"),      ascending=False),
-    "rush_yards":       rank_teams(all_teams, lambda t: get(off_rows, t, "rush_yards"),      ascending=False),
-    "ppg":              rank_teams(all_teams, lambda t: get(off_rows, t, "ppg"),             ascending=False),
-    "total_tds":        rank_teams(all_teams, lambda t: get(off_rows, t, "pass_tds") + get(off_rows, t, "rush_tds"), ascending=False),
-    "first_downs":      rank_teams(all_teams, lambda t: get(off_rows, t, "first_downs"),     ascending=False),
-    "yards_allowed":    rank_teams(all_teams, lambda t: get(def_rows, t, "yards_allowed"),   ascending=True),
-    "pass_yds_allowed": rank_teams(all_teams, lambda t: get(def_rows, t, "pass_yards_allowed"), ascending=True),
-    "rush_yds_allowed": rank_teams(all_teams, lambda t: get(def_rows, t, "rush_yards_allowed"), ascending=True),
-    "pts_allowed":      rank_teams(all_teams, lambda t: get(def_rows, t, "points_allowed"),  ascending=True),
-    "def_sacks":        rank_teams(all_teams, lambda t: get(def_rows, t, "sacks"),           ascending=False),
-    "def_ints":         rank_teams(all_teams, lambda t: get(def_rows, t, "interceptions"),   ascending=False),
-    "third_down":       rank_teams(all_teams, lambda t: get(conv_rows, t, "third_down_pct"), ascending=False),
-    "fourth_down":      rank_teams(all_teams, lambda t: get(conv_rows, t, "fourth_down_pct"), ascending=False),
-    "rz_td_pct":        rank_teams(all_teams, lambda t: get(rz_rows, t, "redzone_td_pct"),  ascending=False),
-    "to_diff":          rank_teams(all_teams, lambda t: get(to_rows, t, "differential"),     ascending=False),
-    "penalties":        rank_teams(all_teams, lambda t: get(pen_rows, t, "penalties"),       ascending=True),
-    "pen_yards":        rank_teams(all_teams, lambda t: get(pen_rows, t, "penalty_yards"),   ascending=True),
-    "to_given":         rank_teams(all_teams, lambda t: get(to_rows, t, "given"),            ascending=False),
-}
+    return off_rows, def_rows, conv_rows, rz_rows, pen_rows, to_rows
 
 
-def build_s8_block(t):
-    o  = off_rows.get(t, {})
-    d  = def_rows.get(t, {})
-    c  = conv_rows.get(t, {})
+def check_teams(season, tables):
+    """Every sheet must list all 32 teams under names the map knows."""
+    names = ["Offense", "Defense", "Conversions", "RedZone", "Penalties", "Turnovers"]
+    ok = True
+    for name, table in zip(names, tables):
+        unknown = sorted(set(table) - set(TEAM_FILE_MAP))
+        missing = sorted(set(TEAM_FILE_MAP) - set(table))
+        if unknown:
+            print(f"  [error] S{season} {name}: unrecognized team names {unknown}")
+            ok = False
+        if missing:
+            print(f"  [error] S{season} {name}: missing teams {missing}")
+            ok = False
+    if not ok:
+        print("Fix the team names in the workbook and re-run. Nothing was written.")
+        sys.exit(1)
+
+
+# ─── Build blocks ─────────────────────────────────────────────────────────────
+
+def build_season_block(t, tables):
+    off_rows, def_rows, conv_rows, rz_rows, pen_rows, to_rows = tables
+    o = off_rows.get(t, {})
+    d = def_rows.get(t, {})
+    c = conv_rows.get(t, {})
     rz = rz_rows.get(t, {})
-    p  = pen_rows.get(t, {})
+    p = pen_rows.get(t, {})
     tv = to_rows.get(t, {})
 
     return {
@@ -245,12 +260,38 @@ def build_s8_block(t):
     }
 
 
-def build_s8_rankings(t):
-    o  = off_rows.get(t, {})
-    d  = def_rows.get(t, {})
-    c  = conv_rows.get(t, {})
+def compute_ranks(all_teams, tables):
+    off_rows, def_rows, conv_rows, rz_rows, pen_rows, to_rows = tables
+    return {
+        "total_yards":      rank_teams(all_teams, lambda t: get(off_rows, t, "total_yards"),    ascending=False),
+        "pass_yards":       rank_teams(all_teams, lambda t: get(off_rows, t, "pass_yards"),      ascending=False),
+        "rush_yards":       rank_teams(all_teams, lambda t: get(off_rows, t, "rush_yards"),      ascending=False),
+        "ppg":              rank_teams(all_teams, lambda t: get(off_rows, t, "ppg"),             ascending=False),
+        "total_tds":        rank_teams(all_teams, lambda t: get(off_rows, t, "pass_tds") + get(off_rows, t, "rush_tds"), ascending=False),
+        "first_downs":      rank_teams(all_teams, lambda t: get(off_rows, t, "first_downs"),     ascending=False),
+        "yards_allowed":    rank_teams(all_teams, lambda t: get(def_rows, t, "yards_allowed"),   ascending=True),
+        "pass_yds_allowed": rank_teams(all_teams, lambda t: get(def_rows, t, "pass_yards_allowed"), ascending=True),
+        "rush_yds_allowed": rank_teams(all_teams, lambda t: get(def_rows, t, "rush_yards_allowed"), ascending=True),
+        "pts_allowed":      rank_teams(all_teams, lambda t: get(def_rows, t, "points_allowed"),  ascending=True),
+        "def_sacks":        rank_teams(all_teams, lambda t: get(def_rows, t, "sacks"),           ascending=False),
+        "def_ints":         rank_teams(all_teams, lambda t: get(def_rows, t, "interceptions"),   ascending=False),
+        "third_down":       rank_teams(all_teams, lambda t: get(conv_rows, t, "third_down_pct"), ascending=False),
+        "fourth_down":      rank_teams(all_teams, lambda t: get(conv_rows, t, "fourth_down_pct"), ascending=False),
+        "rz_td_pct":        rank_teams(all_teams, lambda t: get(rz_rows, t, "redzone_td_pct"),  ascending=False),
+        "to_diff":          rank_teams(all_teams, lambda t: get(to_rows, t, "differential"),     ascending=False),
+        "penalties":        rank_teams(all_teams, lambda t: get(pen_rows, t, "penalties"),       ascending=True),
+        "pen_yards":        rank_teams(all_teams, lambda t: get(pen_rows, t, "penalty_yards"),   ascending=True),
+        "to_given":         rank_teams(all_teams, lambda t: get(to_rows, t, "given"),            ascending=False),
+    }
+
+
+def build_season_rankings(t, tables, ranks):
+    off_rows, def_rows, conv_rows, rz_rows, pen_rows, to_rows = tables
+    o = off_rows.get(t, {})
+    d = def_rows.get(t, {})
+    c = conv_rows.get(t, {})
     rz = rz_rows.get(t, {})
-    p  = pen_rows.get(t, {})
+    p = pen_rows.get(t, {})
     tv = to_rows.get(t, {})
     total_tds = o.get("pass_tds", 0) + o.get("rush_tds", 0)
 
@@ -285,206 +326,208 @@ def build_s8_rankings(t):
     }
 
 
-# ─── Update each team JSON ────────────────────────────────────────────────────
-updated, skipped = 0, 0
+# ─── Update team JSONs ────────────────────────────────────────────────────────
 
-for team_name in all_teams:
-    file_stem = TEAM_FILE_MAP.get(team_name)
-    if not file_stem:
-        print(f"  ⚠  No file mapping for {team_name}, skipping")
-        skipped += 1
-        continue
+def update_team_reports(season, tables):
+    all_teams = sorted(set().union(*tables))
+    ranks = compute_ranks(all_teams, tables)
+    updated = 0
 
-    json_path = os.path.join(TEAM_STATS_DIR, f"{file_stem}_report.json")
-    if not os.path.exists(json_path):
-        print(f"  ⚠  File not found: {json_path}, skipping")
-        skipped += 1
-        continue
-
-    with open(json_path) as f:
-        report = json.load(f)
-
-    # Add S8 season data
-    report.setdefault("season_by_season", {})["8"] = build_s8_block(team_name)
-
-    # Add S8 rankings
-    report.setdefault("rankings", {}).setdefault("by_season", {})["8"] = build_s8_rankings(team_name)
-
-    # Update seasons_analyzed if present
-    if "seasons_analyzed" in report and 8 not in report["seasons_analyzed"]:
-        report["seasons_analyzed"].append(8)
-
-    # Update aggregated_stats
-    sbs = report["season_by_season"]
-    seasons_played = len(sbs)
-    seasons_with_data = [str(s) for s in range(1, seasons_played + 1) if str(s) in sbs]
-
-    agg = report.setdefault("aggregated_stats", {})
-    agg["seasons_played"] = seasons_played
-    agg["total_offensive_yards"] = round(sum(sbs[s]["offense"]["total_yards"] for s in seasons_with_data if "offense" in sbs[s]), 1)
-    agg["total_points_scored"]   = round(sum(sbs[s]["offense"]["ppg"] * 16    for s in seasons_with_data if "offense" in sbs[s]), 1)
-    agg["total_points_allowed"]  = round(sum(sbs[s]["defense"]["points_allowed"] for s in seasons_with_data if "defense" in sbs[s]), 1)
-    agg["total_turnovers_forced"]= sum(sbs[s]["turnovers"]["taken"]            for s in seasons_with_data if "turnovers" in sbs[s])
-    agg["total_turnovers_given"] = sum(abs(sbs[s]["turnovers"]["given"])       for s in seasons_with_data if "turnovers" in sbs[s])
-    agg["avg_ppg"]               = round(sum(sbs[s]["offense"]["ppg"]          for s in seasons_with_data if "offense" in sbs[s]) / seasons_played, 4)
-    agg["avg_points_allowed"]    = round(agg["total_points_allowed"] / seasons_played, 4)
-    agg["avg_turnover_diff"]     = round(sum(sbs[s]["turnovers"]["differential"] for s in seasons_with_data if "turnovers" in sbs[s]) / seasons_played, 4)
-
-    with open(json_path, "w") as f:
-        json.dump(report, f, indent=2)
-
-    print(f"  ✓  {json_path}")
-    updated += 1
-
-print(f"\nDone — {updated} updated, {skipped} skipped")
-
-# ─── Rebuild master_summary.json and TEAM_RANKINGS_SUMMARY.txt ───────────────
-print("\nRebuilding summary files...")
-
-GAMES = 16
-team_seasons = {}
-
-for s in range(1, 9):
-    off_sheet = sheets.get(f"S{s} Offense")
-    def_sheet = sheets.get(f"S{s} Defense")
-    to_sheet  = sheets.get(f"S{s} Turnovers")
-    if off_sheet is None:
-        continue
-    for _, r in off_sheet.iterrows():
-        t = norm(r.iloc[0])
-        if not t or t in ("TEAM", "NAN", "NONE"):
+    for team_name in all_teams:
+        file_stem = TEAM_FILE_MAP[team_name]
+        json_path = os.path.join(TEAM_STATS_DIR, f"{file_stem}_report.json")
+        if not os.path.exists(json_path):
+            print(f"  [warn] file not found: {json_path}, skipping")
             continue
-        team_seasons.setdefault(t, {})[s] = {
-            "ppg":       safe_float(r.iloc[5]),
-            "off_yards": safe_float(r.iloc[2]),
-        }
-    if def_sheet is not None:
-        for _, r in def_sheet.iterrows():
-            t = norm(r.iloc[0])
-            if not t or t in ("TEAM", "NAN", "NONE"):
-                continue
-            if t in team_seasons and s in team_seasons[t]:
-                team_seasons[t][s]["pts_allowed"] = safe_float(r.iloc[4])
-    if to_sheet is not None:
-        for _, r in to_sheet.iterrows():
-            t = norm(r.iloc[0])
-            if not t or t in ("TEAM", "NAN", "NONE"):
-                continue
-            if t in team_seasons and s in team_seasons[t]:
-                team_seasons[t][s]["to_diff"] = safe_int(r.iloc[1])
 
-summary_teams = sorted(team_seasons.keys())
+        with open(json_path) as f:
+            report = json.load(f)
 
-def team_agg(team):
-    seasons = team_seasons[team]
-    ppgs        = [v["ppg"]         for v in seasons.values() if "ppg"         in v]
-    pts_allowed = [v["pts_allowed"] for v in seasons.values() if "pts_allowed" in v]
-    to_diffs    = [v["to_diff"]     for v in seasons.values() if "to_diff"     in v]
-    off_yards   = [v["off_yards"]   for v in seasons.values() if "off_yards"   in v]
-    n = len(seasons)
-    avg_ppg = sum(ppgs) / len(ppgs)               if ppgs        else 0
-    avg_pa  = sum(pts_allowed) / len(pts_allowed) if pts_allowed else 0
-    avg_to  = sum(to_diffs) / len(to_diffs)       if to_diffs    else 0
-    pt_diff = sum(p * GAMES for p in ppgs) - sum(pts_allowed)
-    return dict(
-        seasons_played        = n,
-        avg_ppg               = round(avg_ppg, 1),
-        avg_points_allowed    = round(avg_pa,  1),
-        avg_turnover_diff     = round(avg_to,  1),
-        total_offensive_yards = int(sum(off_yards)),
-        point_differential    = int(round(pt_diff)),
+        report.setdefault("season_by_season", {})[str(season)] = build_season_block(team_name, tables)
+        report.setdefault("rankings", {}).setdefault("by_season", {})[str(season)] = \
+            build_season_rankings(team_name, tables, ranks)
+
+        seasons_analyzed = report.setdefault("seasons_analyzed", [])
+        if season not in seasons_analyzed:
+            seasons_analyzed.append(season)
+            seasons_analyzed.sort()
+
+        sbs = report["season_by_season"]
+        seasons_with_data = sorted(sbs.keys(), key=int)
+        seasons_played = len(seasons_with_data)
+
+        agg = report.setdefault("aggregated_stats", {})
+        agg["seasons_played"] = seasons_played
+        agg["total_offensive_yards"] = round(sum(sbs[s]["offense"]["total_yards"] for s in seasons_with_data if "offense" in sbs[s]), 1)
+        agg["total_points_scored"] = round(sum(sbs[s]["offense"]["ppg"] * GAMES_PER_SEASON for s in seasons_with_data if "offense" in sbs[s]), 1)
+        agg["total_points_allowed"] = round(sum(sbs[s]["defense"]["points_allowed"] for s in seasons_with_data if "defense" in sbs[s]), 1)
+        agg["total_turnovers_forced"] = sum(sbs[s]["turnovers"]["taken"] for s in seasons_with_data if "turnovers" in sbs[s])
+        agg["total_turnovers_given"] = sum(abs(sbs[s]["turnovers"]["given"]) for s in seasons_with_data if "turnovers" in sbs[s])
+        agg["avg_ppg"] = round(sum(sbs[s]["offense"]["ppg"] for s in seasons_with_data if "offense" in sbs[s]) / seasons_played, 4)
+        agg["avg_points_allowed"] = round(agg["total_points_allowed"] / seasons_played, 4)
+        agg["avg_turnover_diff"] = round(sum(sbs[s]["turnovers"]["differential"] for s in seasons_with_data if "turnovers" in sbs[s]) / seasons_played, 4)
+
+        with open(json_path, "w") as f:
+            json.dump(report, f, indent=2)
+
+        print(f"  updated {file_stem}_report.json")
+        updated += 1
+
+    print(f"\n{updated} team reports updated with Season {season}")
+
+
+# ─── Rebuild summaries ────────────────────────────────────────────────────────
+
+def rebuild_summaries(sheets, last_season):
+    print("\nRebuilding summary files...")
+    team_seasons = {}
+    seasons = list(range(1, last_season + 1))
+
+    for s in seasons:
+        off_sheet = sheets.get(f"S{s} Offense")
+        def_sheet = sheets.get(f"S{s} Defense")
+        to_sheet = sheets.get(f"S{s} Turnovers")
+        if off_sheet is None:
+            continue
+        for _, r in off_sheet.iterrows():
+            t = norm(r.iloc[0])
+            if not is_team_row(t):
+                continue
+            team_seasons.setdefault(t, {})[s] = {
+                "ppg":       safe_float(r.iloc[5]),
+                "off_yards": safe_float(r.iloc[2]),
+            }
+        if def_sheet is not None:
+            for _, r in def_sheet.iterrows():
+                t = norm(r.iloc[0])
+                if is_team_row(t) and t in team_seasons and s in team_seasons[t]:
+                    team_seasons[t][s]["pts_allowed"] = safe_float(r.iloc[4])
+        if to_sheet is not None:
+            for _, r in to_sheet.iterrows():
+                t = norm(r.iloc[0])
+                if is_team_row(t) and t in team_seasons and s in team_seasons[t]:
+                    team_seasons[t][s]["to_diff"] = safe_int(r.iloc[1])
+
+    summary_teams = sorted(team_seasons.keys())
+
+    def team_agg(team):
+        ts = team_seasons[team]
+        ppgs = [v["ppg"] for v in ts.values() if "ppg" in v]
+        pts_allowed = [v["pts_allowed"] for v in ts.values() if "pts_allowed" in v]
+        to_diffs = [v["to_diff"] for v in ts.values() if "to_diff" in v]
+        off_yards = [v["off_yards"] for v in ts.values() if "off_yards" in v]
+        avg_ppg = sum(ppgs) / len(ppgs) if ppgs else 0
+        avg_pa = sum(pts_allowed) / len(pts_allowed) if pts_allowed else 0
+        avg_to = sum(to_diffs) / len(to_diffs) if to_diffs else 0
+        pt_diff = sum(p * GAMES_PER_SEASON for p in ppgs) - sum(pts_allowed)
+        return dict(
+            seasons_played=len(ts),
+            avg_ppg=round(avg_ppg, 1),
+            avg_points_allowed=round(avg_pa, 1),
+            avg_turnover_diff=round(avg_to, 1),
+            total_offensive_yards=int(sum(off_yards)),
+            point_differential=int(round(pt_diff)),
+        )
+
+    summaries = {t: team_agg(t) for t in summary_teams}
+
+    def rank_overall(key, ascending=False):
+        return sorted(summary_teams, key=lambda t: summaries[t][key], reverse=not ascending)
+
+    overall_off = rank_overall("avg_ppg", ascending=False)
+    overall_def = rank_overall("avg_points_allowed", ascending=True)
+    overall_to = rank_overall("avg_turnover_diff", ascending=False)
+    overall_ptdiff = rank_overall("point_differential", ascending=False)
+
+    off_rank = {t: i + 1 for i, t in enumerate(overall_off)}
+    def_rank = {t: i + 1 for i, t in enumerate(overall_def)}
+    to_rank = {t: i + 1 for i, t in enumerate(overall_to)}
+
+    master = {
+        "seasons_analyzed": seasons,
+        "total_teams": len(summary_teams),
+        "overall_rankings": {
+            "overall_offense":       overall_off,
+            "overall_defense":       overall_def,
+            "overall_turnover_diff": overall_to,
+            "overall_point_diff":    overall_ptdiff,
+        },
+        "team_summaries": {
+            t: {
+                "seasons_played":        summaries[t]["seasons_played"],
+                "avg_ppg":               summaries[t]["avg_ppg"],
+                "avg_points_allowed":    summaries[t]["avg_points_allowed"],
+                "avg_turnover_diff":     summaries[t]["avg_turnover_diff"],
+                "total_offensive_yards": summaries[t]["total_offensive_yards"],
+                "overall_offense_rank":  off_rank[t],
+                "overall_defense_rank":  def_rank[t],
+                "overall_turnover_rank": to_rank[t],
+            }
+            for t in summary_teams
+        },
+    }
+
+    master_path = os.path.join(TEAM_STATS_DIR, "master_summary.json")
+    with open(master_path, "w") as f:
+        json.dump(master, f, indent=2)
+    print(f"  wrote {master_path}")
+
+    width = 80
+    lines = [
+        "=" * width,
+        f"NFL TEAM STATISTICAL RANKINGS - SEASONS 1-{last_season}",
+        "=" * width,
+        "",
+        f"Seasons Analyzed: {', '.join(str(s) for s in seasons)}",
+        f"Total Teams: {len(summary_teams)}",
+        "",
+    ]
+
+    def add_section(title, ranked, fmt_fn):
+        lines.append("-" * width)
+        lines.append(title)
+        lines.append("-" * width)
+        for i, t in enumerate(ranked, 1):
+            lines.append(f"{i:>2}. {t:<22} {fmt_fn(t)}")
+        lines.append("")
+
+    add_section(
+        "OVERALL OFFENSIVE RANKINGS (Average PPG)",
+        overall_off,
+        lambda t: f"{summaries[t]['avg_ppg']:.1f} PPG",
+    )
+    add_section(
+        "OVERALL DEFENSIVE RANKINGS (Average Points Allowed)",
+        overall_def,
+        lambda t: f"{summaries[t]['avg_points_allowed']:.1f} PA/Season",
+    )
+    add_section(
+        "OVERALL TURNOVER DIFFERENTIAL RANKINGS",
+        overall_to,
+        lambda t: f"{summaries[t]['avg_turnover_diff']:+.1f} TO Diff/Season",
+    )
+    add_section(
+        "OVERALL POINT DIFFERENTIAL RANKINGS",
+        overall_ptdiff,
+        lambda t: f"{summaries[t]['point_differential']:+d} Point Diff ({summaries[t]['seasons_played']} seasons)",
     )
 
-summaries = {t: team_agg(t) for t in summary_teams}
+    txt_path = os.path.join(TEAM_STATS_DIR, "TEAM_RANKINGS_SUMMARY.txt")
+    with open(txt_path, "w") as f:
+        f.write("\n".join(lines))
+    print(f"  wrote {txt_path}")
 
-def rank_overall(key, ascending=False):
-    return sorted(summary_teams, key=lambda t: summaries[t][key], reverse=not ascending)
 
-overall_off    = rank_overall("avg_ppg",            ascending=False)
-overall_def    = rank_overall("avg_points_allowed", ascending=True)
-overall_to     = rank_overall("avg_turnover_diff",  ascending=False)
-overall_ptdiff = rank_overall("point_differential", ascending=False)
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Add one season of box-score stats to the team reports")
+    parser.add_argument("--season", type=int, required=True, help="season number to add, e.g. 9")
+    args = parser.parse_args()
 
-off_rank = {t: i+1 for i,t in enumerate(overall_off)}
-def_rank = {t: i+1 for i,t in enumerate(overall_def)}
-to_rank  = {t: i+1 for i,t in enumerate(overall_to)}
+    print(f"Reading {XLSX_PATH}...")
+    sheets = pd.read_excel(XLSX_PATH, sheet_name=None, header=0)
 
-master = {
-    "seasons_analyzed": list(range(1, 9)),
-    "total_teams": len(summary_teams),
-    "overall_rankings": {
-        "overall_offense":       overall_off,
-        "overall_defense":       overall_def,
-        "overall_turnover_diff": overall_to,
-        "overall_point_diff":    overall_ptdiff,
-    },
-    "team_summaries": {
-        t: {
-            "seasons_played":         summaries[t]["seasons_played"],
-            "avg_ppg":                summaries[t]["avg_ppg"],
-            "avg_points_allowed":     summaries[t]["avg_points_allowed"],
-            "avg_turnover_diff":      summaries[t]["avg_turnover_diff"],
-            "total_offensive_yards":  summaries[t]["total_offensive_yards"],
-            "overall_offense_rank":   off_rank[t],
-            "overall_defense_rank":   def_rank[t],
-            "overall_turnover_rank":  to_rank[t],
-        }
-        for t in summary_teams
-    },
-}
-
-master_path = os.path.join(TEAM_STATS_DIR, "master_summary.json")
-with open(master_path, "w") as f:
-    json.dump(master, f, indent=2)
-print(f"  ✓  {master_path}")
-
-W = 80
-lines = [
-    "=" * W,
-    "NFL TEAM STATISTICAL RANKINGS - SEASONS 1-8",
-    "=" * W,
-    "",
-    "Seasons Analyzed: 1, 2, 3, 4, 5, 6, 7, 8, 8",
-    f"Total Teams: {len(summary_teams)}",
-    "",
-]
-
-def add_section(title, ranked, fmt_fn):
-    lines.append("-" * W)
-    lines.append(title)
-    lines.append("-" * W)
-    for i, t in enumerate(ranked, 1):
-        lines.append(f"{i:>2}. {t:<22} {fmt_fn(t)}")
-    lines.append("")
-
-add_section(
-    "OVERALL OFFENSIVE RANKINGS (Average PPG)",
-    overall_off,
-    lambda t: f"{summaries[t]['avg_ppg']:.1f} PPG",
-)
-add_section(
-    "OVERALL DEFENSIVE RANKINGS (Average Points Allowed)",
-    overall_def,
-    lambda t: f"{summaries[t]['avg_points_allowed']:.1f} PA/Season",
-)
-add_section(
-    "OVERALL TURNOVER DIFFERENTIAL RANKINGS",
-    overall_to,
-    lambda t: (f"+{summaries[t]['avg_turnover_diff']:.1f}"
-               if summaries[t]["avg_turnover_diff"] >= 0
-               else f"{summaries[t]['avg_turnover_diff']:.1f}") + " TO Diff/Season",
-)
-add_section(
-    "OVERALL POINT DIFFERENTIAL RANKINGS",
-    overall_ptdiff,
-    lambda t: (f"+{summaries[t]['point_differential']}"
-               if summaries[t]["point_differential"] >= 0
-               else str(summaries[t]["point_differential"]))
-              + f" Point Diff ({summaries[t]['seasons_played']} seasons)",
-)
-
-txt_path = os.path.join(TEAM_STATS_DIR, "TEAM_RANKINGS_SUMMARY.txt")
-with open(txt_path, "w") as f:
-    f.write("\n".join(lines))
-print(f"  ✓  {txt_path}")
-print("\nAll done!")
+    tables = parse_season(sheets, args.season)
+    check_teams(args.season, tables)
+    update_team_reports(args.season, tables)
+    rebuild_summaries(sheets, args.season)
+    print("\nAll done.")

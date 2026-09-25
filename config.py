@@ -102,7 +102,7 @@ TEAM_STAT_FILES = {
 
 
 # Current season number
-CURRENT_SEASON = 8
+CURRENT_SEASON = 10
 # Regular season week count (17)
 REGULAR_SEASON_WEEKS = 17
 # First season (1) — useful for loops and validation
@@ -135,6 +135,8 @@ TEAM_STATS_DIR    = os.path.join(RAW_DIR, "team_stats")
 PREDICTIONS_PATH   = os.path.join(PROCESSED_DIR, "predictions_log.json")
 # Path to features.csv
 FEATURES_PATH   = os.path.join(PROCESSED_DIR, "features.csv")
+# Backtest output folder
+BACKTEST_DIR    = os.path.join(PROCESSED_DIR, "backtests")
 
 
 # Feature parameters
@@ -157,8 +159,12 @@ SEASON_DECAY = 0.80
 MIN_GAMES_PLAYED = 3
 # Cap point differential per game to reduce blowout skew
 MARGIN_CAP = 28
-# Weight of prior season stats when current season sample is small
-PRIOR_SEASON_WEIGHT = 0.6
+# Prior season vs current season blend: current season weight is
+# games_played / (games_played + PRIOR_BLEND_K). With 8, the current
+# season gets half the weight after 8 games.
+PRIOR_BLEND_K = 8
+# Weight of the last-5-games form supplement relative to full-season stats
+ROLLING_FORM_WEIGHT = 0.2
 # Minimum home/away games before trusting home/away splits
 MIN_HOME_GAMES = 4
 MIN_AWAY_GAMES = 4
@@ -166,13 +172,17 @@ MIN_AWAY_GAMES = 4
 # Model weights
 
 # One weight per feature (home boost, road factor, h2h edge, h2h margin, playoff clutch)
+# The first five were 0.6 / 0.4 / 0.5 / 0.15 / 0.4. In the walk-forward
+# backtest on seasons 2-7, each one made predictions slightly WORSE, so
+# they are switched off. The code paths still exist; re-enable one only
+# if the backtest shows it helping on the training seasons.
 WEIGHTS = {
-    "home_boost":       0.6,   # how much a team's personal home record matters
-    "away_factor":      0.4,   # how much the away team's road record matters
-    "h2h_edge":         0.5,   # how much head-to-head history matters
-    "h2h_margin":       0.15,  # how much avg point margin in h2h matters
-    "playoff_clutch":   0.4,   # how much playoff over/underperformance matters
-    "streak":           0.3,   # how much current win/loss streak matters
+    "home_boost":       0.0,   # how much a team's personal home record matters
+    "away_factor":      0.0,   # how much the away team's road record matters
+    "h2h_edge":         0.0,   # how much head-to-head history matters
+    "h2h_margin":       0.0,   # how much avg point margin in h2h matters
+    "playoff_clutch":   0.0,   # how much playoff over/underperformance matters
+    "streak":           0.3,   # how much current win/loss streak matters (unused)
 }
 
 STAT_WEIGHTS = {
@@ -183,19 +193,31 @@ STAT_WEIGHTS = {
     "third_down_pct":   0.08,
 }
 
-ELO_RATING_WEIGHT = 0.3
+# Rating points added per 100 Elo points above average
+ELO_RATING_WEIGHT = 4.0
 
 # Elo rating system
 ELO_INITIAL = 1500        # starting Elo for every team at the beginning of the sim
 ELO_K_FACTOR = 20         # how much each game shifts the rating — higher = more volatile
 ELO_K_PLAYOFF = 30        # playoffs count more, so a higher K factor
-ELO_HOME_ADVANTAGE = 65   # Elo points added to home team before calculating expected outcome
+# Home teams have won 50.4% of regular-season games across seasons 1-9,
+# so the sim shows essentially no home-field advantage
+ELO_HOME_ADVANTAGE = 0    # Elo points added to home team before calculating expected outcome
+# Offseason regression toward the mean (FiveThirtyEight NFL uses 1/3)
+ELO_SEASON_REGRESSION = 0.33
+# Playoff weeks played at a neutral site (Super Bowl)
+NEUTRAL_SITE_WEEKS = {21}
 
 
-# Logistic scale factor
-LOGISTIC_SCALE = 0.08
-# Raw home field advantage added to every home team's edge regardless of which teams are playing
+# Logistic scale factor. Fitted by `python -m src.evaluation.backtest --fit`
+# on TRAIN_SEASONS (was 0.08, hand-picked; 0.032 when fitted on S2-S7)
+LOGISTIC_SCALE = 0.038
+# Raw home field advantage added to every home team's edge regardless of which teams are playing.
+# Fitted alongside LOGISTIC_SCALE (was 1.5 hand-picked; 2.0 when fitted on S2-S7)
 HOME_FIELD_ADVANTAGE = 1.5
+# Projected margin (points) per rating point of edge, used by predict_score
+# Fitted alongside LOGISTIC_SCALE (0.333 when fitted on S2-S7)
+POINTS_PER_EDGE = 0.372
 # Rating floor and ceiling
 RATING_MIN = 25
 RATING_MAX = 82
@@ -236,3 +258,15 @@ DIFF_MAJOR_SHIFT = 0.08     # 8 percentage points
 # 3pp  → 8pp   logged as minor shift
 # 8pp+         logged as major shift
 # flip         winner changed — always flagged regardless of shift size
+
+
+# Monte Carlo season simulation
+MONTE_CARLO_SIMS = 10000
+
+# Backtest
+# Seasons used to fit LOGISTIC_SCALE, HOME_FIELD_ADVANTAGE and the other
+# fitted values above. Season 1 is excluded because it has no prior season.
+# Never add a season here that you then report backtest results for.
+# S8 and S9 were held out for the out-of-sample backtest
+# (data/processed/backtests/backtest_S8_S9_*.json), then added for S10.
+TRAIN_SEASONS = [2, 3, 4, 5, 6, 7, 8, 9]

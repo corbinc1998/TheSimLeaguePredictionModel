@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
-from src.data.loader import load_games, load_team_stats
+from src.data.loader import load_games, load_team_stats_map
 from src.features.ratings import build_matchup_features
 from src.features.elo import compute_elo_ratings
 from src.model.predict import predict_game, predict_score
@@ -10,6 +10,18 @@ import config
 
 
 def predict_season(games, team_stats_map, season_id, current_week, elo_ratings):
+    """
+    One row per regular-season game. Completed games carry their real score
+    (predicted=False); unplayed games carry a win probability and a projected
+    score (predicted=True).
+
+    current_week is kept for callers and logging; which games count as played
+    comes from each game's "completed" flag.
+
+    Accuracy is NOT measured here: a completed game's "winner" is the actual
+    winner, so comparing it to the result always scores 100%. Use
+    src/evaluation/backtest.py, which predicts each game before its result.
+    """
     results = []
     season_games = [g for g in games if g.get("season") == season_id and not g.get("isPlayoff")]
 
@@ -34,7 +46,7 @@ def predict_season(games, team_stats_map, season_id, current_week, elo_ratings):
                 is_playoff=False
             )
             prediction = predict_game(features)
-            score = predict_score(features["home_rating"], features["away_rating"])
+            score = predict_score(features)
             results.append({
                 **game,
                 "predicted": True,
@@ -56,32 +68,13 @@ def get_season_predictions(games, team_stats_map, season_id, current_week, elo_r
 
 if __name__ == "__main__":
     games = load_games()
-    elo_ratings, elo_history = compute_elo_ratings(games)
+    season_id = max(g["season"] for g in games)
+    elo_ratings, elo_history = compute_elo_ratings(games, as_of_season=season_id)
+    team_stats_map = load_team_stats_map()
 
-    team_stats_map = {}
-    for tid in config.TEAM_IDS:
-        try:
-            team_stats_map[tid] = load_team_stats(tid)
-        except:
-            team_stats_map[tid] = None
-
-    results = predict_season(games, team_stats_map, season_id=8, current_week=1, elo_ratings=elo_ratings)
-
-    correct = 0
-    total = 0
-    for g in results:
-        if g.get("completed") and not g.get("predicted"):
-            actual_winner = g["homeTeamId"] if g["homeScore"] > g["awayScore"] else g["awayTeamId"]
-            if g["winner"] == actual_winner:
-                correct += 1
-            total += 1
-
-    if total > 0:
-        print(f"Season 8 predictions: {correct}/{total} correct ({round(correct/total*100, 1)}%)")
-    else:
-        print("No completed games to evaluate — showing predictions only")
-
+    preds = get_season_predictions(games, team_stats_map, season_id=season_id, current_week=1, elo_ratings=elo_ratings)
+    print(f"Season {season_id}: {len(preds)} unplayed games")
     print("\nSample predictions (first 5 unplayed games):")
-    preds = get_season_predictions(games, team_stats_map, season_id=8, current_week=1, elo_ratings=elo_ratings)
     for g in preds[:5]:
-        print(f"  W{g['week']} {config.ABBR[g['homeTeamId']]} vs {config.ABBR[g['awayTeamId']]} — {g['winner'].upper()} wins ({round(g['home_win_prob']*100)}% home)")
+        print(f"  W{g['week']} {config.ABBR[g['homeTeamId']]} vs {config.ABBR[g['awayTeamId']]} - "
+              f"{g['winner'].upper()} ({round(g['home_win_prob']*100)}% home)")
