@@ -210,14 +210,14 @@ NEUTRAL_SITE_WEEKS = {21}
 
 
 # Logistic scale factor. Fitted by `python -m src.evaluation.backtest --fit`
-# on TRAIN_SEASONS (was 0.08, hand-picked)
-LOGISTIC_SCALE = 0.032
+# on TRAIN_SEASONS (was 0.08, hand-picked; 0.032 when fitted on S2-S7)
+LOGISTIC_SCALE = 0.038
 # Raw home field advantage added to every home team's edge regardless of which teams are playing.
-# Fitted alongside LOGISTIC_SCALE (was 1.5)
-HOME_FIELD_ADVANTAGE = 2.0
+# Fitted alongside LOGISTIC_SCALE (was 1.5 hand-picked; 2.0 when fitted on S2-S7)
+HOME_FIELD_ADVANTAGE = 1.5
 # Projected margin (points) per rating point of edge, used by predict_score
-# Fitted alongside LOGISTIC_SCALE
-POINTS_PER_EDGE = 0.333
+# Fitted alongside LOGISTIC_SCALE (0.333 when fitted on S2-S7)
+POINTS_PER_EDGE = 0.372
 # Rating floor and ceiling
 RATING_MIN = 25
 RATING_MAX = 82
@@ -267,4 +267,6 @@ MONTE_CARLO_SIMS = 10000
 # Seasons used to fit LOGISTIC_SCALE, HOME_FIELD_ADVANTAGE and the other
 # fitted values above. Season 1 is excluded because it has no prior season.
 # Never add a season here that you then report backtest results for.
-TRAIN_SEASONS = [2, 3, 4, 5, 6, 7]
+# S8 and S9 were held out for the out-of-sample backtest
+# (data/processed/backtests/backtest_S8_S9_*.json), then added for S10.
+TRAIN_SEASONS = [2, 3, 4, 5, 6, 7, 8, 9]
