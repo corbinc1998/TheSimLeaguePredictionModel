@@ -1,0 +1,335 @@
+{
+  "created": "2026-10-06T16:27:15.112683",
+  "config": {
+    "LOGISTIC_SCALE": 0.038,
+    "HOME_FIELD_ADVANTAGE": 1.5,
+    "POINTS_PER_EDGE": 0.372,
+    "ELO_SEASON_REGRESSION": 0.33,
+    "ELO_HOME_ADVANTAGE": 0,
+    "ELO_RATING_WEIGHT": 4.0,
+    "PRIOR_BLEND_K": 8,
+    "WEIGHTS": {
+      "home_boost": 0.0,
+      "away_factor": 0.0,
+      "h2h_edge": 0.0,
+      "h2h_margin": 0.0,
+      "playoff_clutch": 0.0,
+      "streak": 0.3
+    }
+  },
+  "seasons": {
+    "10": {
+      "new_all": {
+        "games": 16,
+        "correct": 10,
+        "accuracy": 0.625,
+        "brier": 0.2495,
+        "log_loss": 0.6925
+      },
+      "new_regular": {
+        "games": 16,
+        "correct": 10,
+        "accuracy": 0.625,
+        "brier": 0.2495,
+        "log_loss": 0.6925
+      },
+      "new_playoffs": null,
+      "new_on_logged_games": {
+        "games": 16,
+        "correct": 10,
+        "accuracy": 0.625,
+        "brier": 0.2495,
+        "log_loss": 0.6925
+      },
+      "old_on_logged_games": {
+        "games": 16,
+        "correct": 10,
+        "accuracy": 0.625,
+        "brier": 0.2495,
+        "log_loss": 0.6926
+      },
+      "calibration_new": [
+        {
+          "bucket": "50-60%",
+          "games": 15,
+          "avg_predicted": 0.539,
+          "favorite_won": 0.667
+        },
+        {
+          "bucket": "60-70%",
+          "games": 1,
+          "avg_predicted": 0.636,
+          "favorite_won": 0.0
+        }
+      ],
+      "calibration_old": [
+        {
+          "bucket": "50-60%",
+          "games": 14,
+          "avg_predicted": 0.535,
+          "favorite_won": 0.643
+        },
+        {
+          "bucket": "60-70%",
+          "games": 2,
+          "avg_predicted": 0.618,
+          "favorite_won": 0.5
+        }
+      ],
+      "games": [
+        {
+          "game_id": "1789743089399",
+          "season": 10,
+          "week": 1,
+          "is_playoff": false,
+          "home_id": "hou",
+          "away_id": "jax",
+          "home_win_prob": 0.5075,
+          "winner": "hou",
+          "home_result": 0.0,
+          "margin": -19,
+          "old_home_win_prob": 0.508
+        },
+        {
+          "game_id": "1789743234111",
+          "season": 10,
+          "week": 1,
+          "is_playoff": false,
+          "home_id": "nyj",
+          "away_id": "mia",
+          "home_win_prob": 0.4809,
+          "winner": "mia",
+          "home_result": 0.0,
+          "margin": -28,
+          "old_home_win_prob": 0.481
+        },
+        {
+          "game_id": "1789743243776",
+          "season": 10,
+          "week": 1,
+          "is_playoff": false,
+          "home_id": "kc",
+          "away_id": "sd",
+          "home_win_prob": 0.5443,
+          "winner": "kc",
+          "home_result": 0.0,
+          "margin": -8,
+          "old_home_win_prob": 0.544
+        },
+        {
+          "game_id": "1789743254270",
+          "season": 10,
+          "week": 1,
+          "is_playoff": false,
+          "home_id": "det",
+          "away_id": "chi",
+          "home_win_prob": 0.4004,
+          "winner": "chi",
+          "home_result": 0.0,
+          "margin": -7,
+          "old_home_win_prob": 0.4
+        },
+        {
+          "game_id": "1789743263316",
+          "season": 10,
+          "week": 1,
+          "is_playoff": false,
+          "home_id": "buf",
+          "away_id": "cle",
+          "home_win_prob": 0.4766,
+          "winner": "cle",
+          "home_result": 0.0,
+          "margin": -21,
+          "old_home_win_prob": 0.477
+        },
+        {
+          "game_id": "1789743275790",
+          "season": 10,
+          "week": 1,
+          "is_playoff": false,
+          "home_id": "min",
+          "away_id": "sf",
+          "home_win_prob": 0.49,
+          "winner": "sf",
+          "home_result": 0.0,
+          "margin": -19,
+          "old_home_win_prob": 0.49
+        },
+        {
+          "game_id": "1789743286304",
+          "season": 10,
+          "week": 1,
+          "is_playoff": false,
+          "home_id": "no",
+          "away_id": "nyg",
+          "home_win_prob": 0.5188,
+          "winner": "no",
+          "home_result": 1.0,
+          "margin": 25,
+          "old_home_win_prob": 0.519
+        },
+        {
+          "game_id": "1789743297037",
+          "season": 10,
+          "week": 1,
+          "is_playoff": false,
+          "home_id": "stl",
+          "away_id": "phi",
+          "home_win_prob": 0.4237,
+          "winner": "phi",
+          "home_result": 0.0,
+          "margin": -2,
+          "old_home_win_prob": 0.424
+        },
+        {
+          "game_id": "1789743310433",
+          "season": 10,
+          "week": 1,
+          "is_playoff": false,
+          "home_id": "gb",
+          "away_id": "ne",
+          "home_win_prob": 0.4283,
+          "winner": "ne",
+          "home_result": 1.0,
+          "margin": 25,
+          "old_home_win_prob": 0.428
+        },
+        {
+          "game_id": "1789743330613",
+          "season": 10,
+          "week": 1,
+          "is_playoff": false,
+          "home_id": "oak",
+          "away_id": "cin",
+          "home_win_prob": 0.4522,
+          "winner": "cin",
+          "home_result": 1.0,
+          "margin": 5,
+          "old_home_win_prob": 0.452
+        },
+        {
+          "game_id": "1789743341730",
+          "season": 10,
+          "week": 1,
+          "is_playoff": false,
+          "home_id": "ari",
+          "away_id": "den",
+          "home_win_prob": 0.4758,
+          "winner": "den",
+          "home_result": 1.0,
+          "margin": 10,
+          "old_home_win_prob": 0.476
+        },
+        {
+          "game_id": "1789743351852",
+          "season": 10,
+          "week": 1,
+          "is_playoff": false,
+          "home_id": "car",
+          "away_id": "tb",
+          "home_win_prob": 0.5669,
+          "winner": "car",
+          "home_result": 1.0,
+          "margin": 15,
+          "old_home_win_prob": 0.567
+        },
+        {
+          "game_id": "1789743362569",
+          "season": 10,
+          "week": 1,
+          "is_playoff": false,
+          "home_id": "atl",
+          "away_id": "was",
+          "home_win_prob": 0.4723,
+          "winner": "was",
+          "home_result": 0.0,
+          "margin": -3,
+          "old_home_win_prob": 0.472
+        },
+        {
+          "game_id": "1789743377258",
+          "season": 10,
+          "week": 1,
+          "is_playoff": false,
+          "home_id": "sea",
+          "away_id": "dal",
+          "home_win_prob": 0.4877,
+          "winner": "dal",
+          "home_result": 0.0,
+          "margin": -7,
+          "old_home_win_prob": 0.488
+        },
+        {
+          "game_id": "1789743389293",
+          "season": 10,
+          "week": 1,
+          "is_playoff": false,
+          "home_id": "ten",
+          "away_id": "ind",
+          "home_win_prob": 0.6362,
+          "winner": "ten",
+          "home_result": 0.0,
+          "margin": -3,
+          "old_home_win_prob": 0.636
+        },
+        {
+          "game_id": "1789743399854",
+          "season": 10,
+          "week": 1,
+          "is_playoff": false,
+          "home_id": "bal",
+          "away_id": "pit",
+          "home_win_prob": 0.5384,
+          "winner": "bal",
+          "home_result": 1.0,
+          "margin": 4,
+          "old_home_win_prob": 0.538
+        }
+      ]
+    }
+  },
+  "combined": {
+    "old": {
+      "games": 16,
+      "correct": 10,
+      "accuracy": 0.625,
+      "brier": 0.2495,
+      "log_loss": 0.6926
+    },
+    "new": {
+      "games": 16,
+      "correct": 10,
+      "accuracy": 0.625,
+      "brier": 0.2495,
+      "log_loss": 0.6925
+    },
+    "calibration_old": [
+      {
+        "bucket": "50-60%",
+        "games": 14,
+        "avg_predicted": 0.535,
+        "favorite_won": 0.643
+      },
+      {
+        "bucket": "60-70%",
+        "games": 2,
+        "avg_predicted": 0.618,
+        "favorite_won": 0.5
+      }
+    ],
+    "calibration_new": [
+      {
+        "bucket": "50-60%",
+        "games": 15,
+        "avg_predicted": 0.539,
+        "favorite_won": 0.667
+      },
+      {
+        "bucket": "60-70%",
+        "games": 1,
+        "avg_predicted": 0.636,
+        "favorite_won": 0.0
+      }
+    ]
+  }
+}
