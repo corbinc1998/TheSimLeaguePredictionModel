@@ -1,5 +1,5 @@
 {
-  "exportDate": "2026-10-29T12:35:56.003Z",
+  "exportDate": "2026-10-30T02:42:00.748Z",
   "seasons": {
     "1": {
       "name": "1",
@@ -32164,11 +32164,11 @@
           "week": 16,
           "homeTeamId": "car",
           "awayTeamId": "dal",
-          "homeScore": 0,
-          "awayScore": 0,
+          "homeScore": 32,
+          "awayScore": 20,
           "date": "2026-09-18T00:00:00Z",
-          "completed": false,
-          "status": "scheduled"
+          "completed": true,
+          "status": "final"
         },
         {
           "id": "1789746812904",
@@ -32176,11 +32176,11 @@
           "week": 16,
           "homeTeamId": "min",
           "awayTeamId": "sea",
-          "homeScore": 0,
-          "awayScore": 0,
+          "homeScore": 34,
+          "awayScore": 7,
           "date": "2026-09-18T00:00:00Z",
-          "completed": false,
-          "status": "scheduled"
+          "completed": true,
+          "status": "final"
         },
         {
           "id": "1789746819540",
@@ -32188,11 +32188,11 @@
           "week": 16,
           "homeTeamId": "nyj",
           "awayTeamId": "det",
-          "homeScore": 0,
-          "awayScore": 0,
+          "homeScore": 39,
+          "awayScore": 28,
           "date": "2026-09-18T00:00:00Z",
-          "completed": false,
-          "status": "scheduled"
+          "completed": true,
+          "status": "final"
         },
         {
           "id": "1789746826370",
@@ -32200,11 +32200,11 @@
           "week": 16,
           "homeTeamId": "was",
           "awayTeamId": "ind",
-          "homeScore": 0,
-          "awayScore": 0,
+          "homeScore": 37,
+          "awayScore": 3,
           "date": "2026-09-18T00:00:00Z",
-          "completed": false,
-          "status": "scheduled"
+          "completed": true,
+          "status": "final"
         },
         {
           "id": "1789746832962",
@@ -32212,11 +32212,11 @@
           "week": 16,
           "homeTeamId": "jax",
           "awayTeamId": "buf",
-          "homeScore": 0,
-          "awayScore": 0,
+          "homeScore": 48,
+          "awayScore": 23,
           "date": "2026-09-18T00:00:00Z",
-          "completed": false,
-          "status": "scheduled"
+          "completed": true,
+          "status": "final"
         },
         {
           "id": "1789746846319",
@@ -32224,11 +32224,11 @@
           "week": 16,
           "homeTeamId": "tb",
           "awayTeamId": "cin",
-          "homeScore": 0,
-          "awayScore": 0,
+          "homeScore": 12,
+          "awayScore": 33,
           "date": "2026-09-18T00:00:00Z",
-          "completed": false,
-          "status": "scheduled"
+          "completed": true,
+          "status": "final"
         },
         {
           "id": "1789746853208",
@@ -32236,11 +32236,11 @@
           "week": 16,
           "homeTeamId": "hou",
           "awayTeamId": "den",
-          "homeScore": 0,
-          "awayScore": 0,
+          "homeScore": 31,
+          "awayScore": 45,
           "date": "2026-09-18T00:00:00Z",
-          "completed": false,
-          "status": "scheduled"
+          "completed": true,
+          "status": "final"
         },
         {
           "id": "1789746865224",
@@ -32248,11 +32248,11 @@
           "week": 16,
           "homeTeamId": "pit",
           "awayTeamId": "atl",
-          "homeScore": 0,
-          "awayScore": 0,
+          "homeScore": 45,
+          "awayScore": 35,
           "date": "2026-09-18T00:00:00Z",
-          "completed": false,
-          "status": "scheduled"
+          "completed": true,
+          "status": "final"
         },
         {
           "id": "1789746871804",
@@ -32260,11 +32260,11 @@
           "week": 16,
           "homeTeamId": "phi",
           "awayTeamId": "ten",
-          "homeScore": 0,
-          "awayScore": 0,
+          "homeScore": 38,
+          "awayScore": 45,
           "date": "2026-09-18T00:00:00Z",
-          "completed": false,
-          "status": "scheduled"
+          "completed": true,
+          "status": "final"
         },
         {
           "id": "1789746878620",
@@ -32272,11 +32272,11 @@
           "week": 16,
           "homeTeamId": "cle",
           "awayTeamId": "no",
-          "homeScore": 0,
-          "awayScore": 0,
+          "homeScore": 10,
+          "awayScore": 17,
           "date": "2026-09-18T00:00:00Z",
-          "completed": false,
-          "status": "scheduled"
+          "completed": true,
+          "status": "final"
         },
         {
           "id": "1789746889071",
@@ -32284,11 +32284,11 @@
           "week": 16,
           "homeTeamId": "gb",
           "awayTeamId": "stl",
-          "homeScore": 0,
-          "awayScore": 0,
+          "homeScore": 43,
+          "awayScore": 31,
           "date": "2026-09-18T00:00:00Z",
-          "completed": false,
-          "status": "scheduled"
+          "completed": true,
+          "status": "final"
         },
         {
           "id": "1789746898529",
@@ -32296,11 +32296,11 @@
           "week": 16,
           "homeTeamId": "ari",
           "awayTeamId": "nyg",
-          "homeScore": 0,
-          "awayScore": 0,
+          "homeScore": 36,
+          "awayScore": 30,
           "date": "2026-09-18T00:00:00Z",
-          "completed": false,
-          "status": "scheduled"
+          "completed": true,
+          "status": "final"
         },
         {
           "id": "1789746904045",
@@ -32308,11 +32308,11 @@
           "week": 16,
           "homeTeamId": "sf",
           "awayTeamId": "oak",
-          "homeScore": 0,
-          "awayScore": 0,
+          "homeScore": 9,
+          "awayScore": 34,
           "date": "2026-09-18T00:00:00Z",
-          "completed": false,
-          "status": "scheduled"
+          "completed": true,
+          "status": "final"
         },
         {
           "id": "1789746912879",
@@ -32320,11 +32320,11 @@
           "week": 16,
           "homeTeamId": "sd",
           "awayTeamId": "ne",
-          "homeScore": 0,
-          "awayScore": 0,
+          "homeScore": 29,
+          "awayScore": 24,
           "date": "2026-09-18T00:00:00Z",
-          "completed": false,
-          "status": "scheduled"
+          "completed": true,
+          "status": "final"
         },
         {
           "id": "1789746924633",
@@ -32332,11 +32332,11 @@
           "week": 16,
           "homeTeamId": "bal",
           "awayTeamId": "kc",
-          "homeScore": 0,
-          "awayScore": 0,
+          "homeScore": 40,
+          "awayScore": 10,
           "date": "2026-09-18T00:00:00Z",
-          "completed": false,
-          "status": "scheduled"
+          "completed": true,
+          "status": "final"
         },
         {
           "id": "1789746972027",
@@ -32344,11 +32344,11 @@
           "week": 16,
           "homeTeamId": "mia",
           "awayTeamId": "chi",
-          "homeScore": 0,
-          "awayScore": 0,
+          "homeScore": 15,
+          "awayScore": 10,
           "date": "2026-09-18T00:00:00Z",
-          "completed": false,
-          "status": "scheduled"
+          "completed": true,
+          "status": "final"
         },
         {
           "id": "1789746990175",
