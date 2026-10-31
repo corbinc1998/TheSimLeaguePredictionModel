@@ -1,5 +1,5 @@
 {
-  "exportDate": "2026-10-31T00:55:30.053Z",
+  "exportDate": "2026-10-31T12:44:22.552Z",
   "seasons": {
     "1": {
       "name": "1",
@@ -32541,6 +32541,78 @@
           "date": "2026-09-18T00:00:00Z",
           "completed": true,
           "status": "final"
+        },
+        {
+          "id": "playoff_1793408374539",
+          "seasonId": "10",
+          "week": 18,
+          "homeTeamId": "kc",
+          "awayTeamId": "cle",
+          "homeScore": 21,
+          "awayScore": 24,
+          "date": "2026-10-31T00:00:00Z",
+          "completed": true,
+          "status": "final",
+          "isPlayoff": true,
+          "round": "wildcard",
+          "conference": "AFC",
+          "matchup": 1,
+          "homeTeamSeed": "3",
+          "awayTeamSeed": "6"
+        },
+        {
+          "id": "playoff_1793408612553",
+          "seasonId": "10",
+          "week": 18,
+          "homeTeamId": "phi",
+          "awayTeamId": "sf",
+          "homeScore": 19,
+          "awayScore": 42,
+          "date": "2026-10-31T00:00:00Z",
+          "completed": true,
+          "status": "final",
+          "isPlayoff": true,
+          "round": "wildcard",
+          "conference": "NFC",
+          "matchup": 1,
+          "homeTeamSeed": "3",
+          "awayTeamSeed": "6"
+        },
+        {
+          "id": "playoff_1793408669015",
+          "seasonId": "10",
+          "week": 18,
+          "homeTeamId": "mia",
+          "awayTeamId": "bal",
+          "homeScore": 24,
+          "awayScore": 40,
+          "date": "2026-10-31T00:00:00Z",
+          "completed": true,
+          "status": "final",
+          "isPlayoff": true,
+          "round": "wildcard",
+          "conference": "AFC",
+          "matchup": 2,
+          "homeTeamSeed": "4",
+          "awayTeamSeed": "5"
+        },
+        {
+          "id": "playoff_1793408696186",
+          "seasonId": "10",
+          "week": 18,
+          "homeTeamId": "ari",
+          "awayTeamId": "chi",
+          "homeScore": 27,
+          "awayScore": 20,
+          "date": "2026-10-31T00:00:00Z",
+          "completed": true,
+          "status": "final",
+          "isPlayoff": true,
+          "round": "wildcard",
+          "conference": "NFC",
+          "matchup": 2,
+          "homeTeamSeed": "4",
+          "awayTeamSeed": "5"
         }
       ]
     }
