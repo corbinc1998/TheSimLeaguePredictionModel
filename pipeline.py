@@ -76,7 +76,12 @@ def run(trigger, season_id, current_week):
             "AFC": ["den", "pit", "mia", "hou", "bal", "cin"],
             "NFC": ["chi", "was", "car", "sf", "nyg", "dal"]
         }
-    # Add the actual S10 seeds here once the regular season ends
+    # Override with actual S10 playoff seeds
+    if season_id == 10 and current_week >= 18:
+        seeds = {
+            "AFC": ["cin", "jax", "kc", "mia", "bal", "cle"],
+            "NFC": ["gb", "no", "phi", "ari", "chi", "sf"]
+        }
     actual_seeds = seeds if current_week >= 18 else None
 
     # Step 4b — Monte Carlo projections
