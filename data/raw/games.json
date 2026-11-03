@@ -1,5 +1,5 @@
 {
-  "exportDate": "2026-11-02T14:40:20.339Z",
+  "exportDate": "2026-11-02T19:53:02.776Z",
   "seasons": {
     "1": {
       "name": "1",
@@ -32685,6 +32685,42 @@
           "matchup": 2,
           "homeTeamSeed": "2",
           "awayTeamSeed": "4"
+        },
+        {
+          "id": "playoff_1793631382424",
+          "seasonId": "10",
+          "week": 20,
+          "homeTeamId": "cin",
+          "awayTeamId": "jax",
+          "homeScore": 24,
+          "awayScore": 27,
+          "date": "2026-11-02T00:00:00Z",
+          "completed": true,
+          "status": "final",
+          "isPlayoff": true,
+          "round": "conference",
+          "conference": "AFC",
+          "matchup": 1,
+          "homeTeamSeed": "1",
+          "awayTeamSeed": "2"
+        },
+        {
+          "id": "playoff_1793631411417",
+          "seasonId": "10",
+          "week": 20,
+          "homeTeamId": "ari",
+          "awayTeamId": "sf",
+          "homeScore": 31,
+          "awayScore": 24,
+          "date": "2026-11-02T00:00:00Z",
+          "completed": true,
+          "status": "final",
+          "isPlayoff": true,
+          "round": "conference",
+          "conference": "NFC",
+          "matchup": 1,
+          "homeTeamSeed": "4",
+          "awayTeamSeed": "6"
         }
       ]
     }
